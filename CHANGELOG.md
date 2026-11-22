@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com) and the projec
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-22
+
 ### Added
 
 - `make publish`: puts the release from `make release` on GitHub (push `main` and the tag, create the release with changelog, zip and checksum). Stops without changing anything if the version was not built, not committed or is already published. Token in `.env` (template `.env.example`)
