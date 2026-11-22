@@ -5,10 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com) and the projec
 
 ## [Unreleased]
 
-## [0.1.6] - 2026-11-22
-
 ### Added
 
+- Updates page in the backend: checks GitHub once a day in the background for a newer release (can be switched off), shows "New" in the menu, installs it with one click or from an uploaded zip. Every update checks the signature and every file, makes a backup of program files and database first (the last two are kept) and puts it back automatically if something fails. "Create backup now" makes an own backup of the content (database and media library, no program files) that stays until deleted. Own backups can be downloaded as a zip and uploaded again, also on another installation; restoring keeps the account, mail settings and page address of the installation, brings an older backup up to date and refuses one from a newer version.  Blocked in development copies so it never overwrites source code
+- Legal > Privacy shows a ready section about the data Bioly itself processes (no cookies on the link page, session storage for the age check, hashed IP for one minute when loading link lists, no external services), with "Copy" and "Add to the end of the text", in its own area between two lines that folds open and shut. Checking the own privacy policy is up to the operator
 - Countdown module for the next event: start and optional end (date, time), heading, place and optional link; large or compact view; date and time fields sit side by side in the editor (new field option `pair`). In the compact view, details too long for one line run slowly from right to left in a loop (not with reduced motion). Before the start it counts down days, hours and minutes, during the event it shows "Happening now", afterwards it hides itself or shows "Over". The state follows the visitor's clock (`countdown.js`), the times the time zone from the settings
 - Field types `date` and `time` for modules
 - 22 more Lucide icons, now 150: among them lock, key, coins, chain, cat, rabbit, car, anchor, compass, book, wine, cookie
@@ -16,7 +16,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com) and the projec
 - Patterns can fade out towards the top as well as towards the bottom
 - Link previews: Open Graph tags (title, description, header image, address) and a canonical link, built from the stored site address. The page title falls back to "Links" when no name is set
 - Make commands sorted by the flow (develop, check, try an update, release) and explained in `docs/10-arbeitsablauf.md`. New: `make zip` (test zip, not signed) and `make testsite` (puts the zip into a separate test site on port 8081 the way an FTP upload does, so an update can be tried end to end). Renamed: `reset` to `reset-demo`, `fresh` to `reset-empty`. Checking is `make check` (plus `make fix` and `make check-icons`); the other single check commands are gone. `make keys` asks twice before it creates a key
-- `make check` runs everything the CI runs: code style, PHPStan, tests, icons and `composer audit`; the Forgejo workflow `.forgejo/workflows/ci.yml` does the same on PHP 8.3 and 8.5
+- `make check` runs all checks: code style, PHPStan, tests, icons and `composer audit`
 - 56 more Lucide icons, now 16 per color, among them emotions (laugh, sad, angry, heartbreak, meh), eyes, silence and mute, dog and bone, IT (terminal, server, database, processor, bug, Wi-Fi, keyboard, monitor) and hobbies (cooking, camping, fishing, hiking, drums, piano, games, reading), for subscription platforms without a logo (exclusive, become a fan); also megaphone, rocket, discount badge, QR code, share and more
 - Patterns: dots, waves, contour lines, Memphis and maze, for the header and the background. Both use the same picker: tiles with a preview on their own ground color, then strength (subtle, medium, strong), size (small, medium, large; the tile stays seamless) and "Fade out towards the bottom". Pattern files carry a version (`?v=`), so a changed pattern is never taken from an old cache
 - Background: choose "Color" (optionally with a pattern) or "Image" (a photo from the media library, fixed while scrolling; cards and text follow its main color). The media library counts it as used

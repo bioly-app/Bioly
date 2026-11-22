@@ -32,6 +32,22 @@ Diese Regeln gelten für **jede** Änderung. Sie sind der Grund, warum Bioly ohn
 | Bremse für Multilinks (20 Abrufe pro Minute und Adresse, Adresse nur als HMAC gespeichert) | `src/Service/RateLimiter.php`, Tabelle `rate_hits` |
 | Feldprüfung der Module | `src/Module/Validator.php` |
 
+## Datenschutz: was Bioly speichert
+
+Die Betreiber schreiben Impressum und Datenschutzerklärung selbst. Was Bioly selbst verarbeitet, steht als fertiger Baustein im Backend unter Rechtliches > Datenschutz (Text: `legal.block.text` in `lang/*.json`). Der Bereich ist aufklappbar und lässt sich kopieren oder an den eigenen Text anhängen. Ob er in der Datenschutzerklärung steht, prüfen die Betreiber selbst.
+
+| Was | Wo | Wie lange |
+| --- | --- | --- |
+| Keine Cookies auf der Linkseite | öffentliche Routen starten keine Session (`Routes.php`) | |
+| Login-Cookie `bioly_session` | nur im Backend, technisch notwendig | bis zum Abmelden, höchstens 12 Stunden |
+| Bestätigte Altersabfrage | `sessionStorage` im Browser (`multilink.js`) | bis der Tab geschlossen wird |
+| IP beim Nachladen von Linklisten | Tabelle `rate_hits`, nur als HMAC (`RateLimiter`) | eine Minute, gelöscht bei der nächsten Anfrage |
+| Fehler | `data/logs/app.log`: Zeit, Methode, Pfad, Fehlermeldung, keine IP | bis zum Löschen |
+| Externe Dienste | keine: Schriften, Bilder und Icons kommen vom eigenen Server | |
+| Update-Suche | der Server fragt GitHub nach der neuesten Version; übertragen wird nur die Adresse des Servers, keine Daten von Besuchern. Abschaltbar unter Updates | einmal am Tag |
+
+Wer etwas daran ändert, z. B. ein Cookie oder einen externen Dienst einführt, passt den Baustein in `lang/*.json` und diese Tabelle mit an.
+
 ## Vor jedem Pull Request
 
 - `make check` ohne Fehler

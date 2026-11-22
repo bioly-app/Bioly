@@ -65,6 +65,45 @@
     max-width: 14rem;
   }
 
+  /* File field: compact, the browser's button looks like our buttons */
+  .file-input {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 28rem;
+    min-height: var(--control);
+    padding: var(--space-2);
+    border: 1px solid var(--field);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    line-height: calc(var(--control) - var(--space-2) * 2 - 2px);
+    cursor: pointer;
+  }
+
+  .file-input::file-selector-button {
+    height: calc(var(--control) - var(--space-2) * 2 - 2px);
+    margin-right: var(--space-5);
+    padding: 0 var(--space-6);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius-sm) - 2px);
+    background: var(--ground);
+    color: var(--text);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  .file-input:hover::file-selector-button {
+    background: var(--hover);
+  }
+
+  .file-input:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
   /* Two fields side by side (date and time), one below the other when narrow */
   .field-pair {
     display: grid;

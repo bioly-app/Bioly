@@ -36,6 +36,10 @@ final class BackendContext implements MiddlewareInterface
         $twig->addGlobal('current_path', $request->getUri()->getPath());
         $twig->addGlobal('avatar_url', $this->services->media()->exists($avatar) ? '/media/' . $avatar : null);
         $twig->addGlobal('session_info', ['idle' => $this->services->auth()->idleSeconds(), 'ends_at' => $this->services->auth()->sessionEndsAt()]);
+        $updates = $this->services->updateCheck();
+        $twig->addGlobal('update_available', $updates->state()['available']);
+        // The check itself runs in the background (session.js), so no page waits for GitHub.
+        $twig->addGlobal('update_due', $updates->due());
         $twig->addGlobal('favicon_version', (string) ($settings->getArray('publish')['favicon'] ?? '0'));
 
         return $handler->handle($request);

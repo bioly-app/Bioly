@@ -2,6 +2,8 @@
 // (Auth::user()). While someone works, the page keeps the session alive; shortly before
 // the end it warns, so no draft is lost.
 
+import { api } from './api.js';
+
 const box = document.querySelector('[data-session]');
 
 if (box) {
@@ -52,4 +54,11 @@ if (box) {
   };
 
   window.setInterval(check, 30 * 1000);
+}
+
+// Once a day: ask in the background whether a new Bioly version exists (Updates page).
+// The server only sets data-update-check when the check is due and switched on.
+const updateCheck = document.body.dataset.updateCheck;
+if (updateCheck) {
+  api(updateCheck, {}).catch(() => {});
 }

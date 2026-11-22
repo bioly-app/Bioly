@@ -215,4 +215,280 @@
     border: 0;
     border-top: 1px solid var(--border);
   }
+
+  /* Legal > Privacy: the Bioly section, an own area between two lines that folds open */
+  .legal-block__line {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  /* The head looks like a clickable row: border, hover, "Show" / "Hide" with an arrow */
+  .legal-block__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    min-height: var(--control);
+    padding: var(--space-6) var(--space-8);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    cursor: pointer;
+    list-style: none;
+    transition: border-color var(--duration), background var(--duration);
+  }
+
+  .legal-block__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .legal-block__summary:hover {
+    border-color: var(--accent-line);
+    background: var(--accent-tint);
+  }
+
+  .legal-block__summary:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .legal-block__head {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .legal-block__title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+  }
+
+  .legal-block__hint {
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+
+  .legal-block__toggle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--accent-ink);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .legal-block__hide,
+  .legal-block[open] .legal-block__show {
+    display: none;
+  }
+
+  .legal-block[open] .legal-block__hide {
+    display: inline;
+  }
+
+  .legal-block__chevron {
+    width: var(--icon);
+    height: var(--icon);
+    transition: transform var(--duration);
+  }
+
+  .legal-block[open] .legal-block__chevron {
+    transform: rotate(180deg);
+  }
+
+  .legal-block__body {
+    padding-top: var(--space-6);
+  }
+
+  /* Updates page: version and update at the top, backups below */
+  /* Head with a button: the button moves below the text on narrow screens */
+  .update-head {
+    flex-wrap: wrap;
+  }
+
+  .update-head .button {
+    white-space: nowrap;
+  }
+
+  .update-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .update-status__current {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .update-status__version {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+  }
+
+  .update-new {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-7);
+    border: 1px solid var(--accent-line);
+    border-radius: var(--radius-lg);
+    background: var(--accent-tint);
+  }
+
+  .update-new__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--accent-ink);
+  }
+
+  .update-new__svg {
+    width: var(--icon);
+    height: var(--icon);
+  }
+
+  .update-new__text,
+  .update-row__text,
+  .update-backups__text {
+    display: flex;
+    flex: 1 1 14rem;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .update-notes {
+    max-height: 18rem;
+    margin: 0;
+    padding: var(--space-6);
+    overflow: auto;
+    border-radius: var(--radius);
+    background: var(--ground);
+    font: inherit;
+    font-size: var(--text-sm);
+    white-space: pre-wrap;
+  }
+
+  .update-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .update-row--line {
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--border);
+  }
+
+  .update-row__label {
+    font-weight: var(--weight-semibold);
+  }
+
+  /* Fold-out parts (upload from a file, what a backup contains) */
+  .disclosure__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: fit-content;
+    min-height: var(--control);
+    color: var(--accent-ink);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .disclosure__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure__chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--duration);
+  }
+
+  .disclosure[open] > .disclosure__summary .disclosure__chevron {
+    transform: rotate(180deg);
+  }
+
+  .disclosure__summary:focus-visible {
+    border-radius: var(--radius-sm);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .disclosure__body {
+    margin: var(--space-2) 0 0;
+  }
+
+  /* File field and its button on one line, wrapping when narrow */
+  .upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .upload-row .file-input {
+    flex: 1 1 16rem;
+  }
+
+  .update-backups {
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    list-style: none;
+  }
+
+  .update-backups__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6) var(--space-7);
+  }
+
+  .update-backups__item + .update-backups__item {
+    border-top: 1px solid var(--border);
+  }
+
+  .update-backups__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .update-backups__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .update-empty {
+    margin: 0;
+    padding: var(--space-8);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
 }

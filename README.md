@@ -35,7 +35,7 @@ You need Docker and `make`. Run `make` to see all commands; the full flow is exp
 | Step | Commands |
 | --- | --- |
 | Develop | `docker compose up --build` (site http://localhost:8080, backend `/admin`, user `admin`, password `Bioly-Demo-2026`, mail http://localhost:8025), `make reset-demo`, `make reset-empty`, `make migrate` |
-| Check before every commit | `make check` runs everything the CI runs: code style, PHPStan, tests, icons, `composer audit`. `make fix` corrects the code style, `make check-icons` checks only the icon folders |
+| Check before every commit | `make check` runs all checks: code style, PHPStan, tests, icons, `composer audit`. `make fix` corrects the code style, `make check-icons` checks only the icon folders |
 | Try an update | `make zip` builds a test zip (not signed), `make testsite` puts it into a separate test site on http://localhost:8081 like an FTP upload, `make testsite-reset` empties it |
 | Release | `make keys` (once, ever; asks twice), `make release` |
 

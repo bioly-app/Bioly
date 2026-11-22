@@ -29,7 +29,7 @@ migrate: ## Run new migrations without restarting the container
 
 ##@ Check (before every commit)
 
-check: ## Everything the CI checks: code style, PHPStan, tests, icons, security audit
+check: ## All checks: code style, PHPStan, tests, icons, security audit
 	$(COMPOSE) exec app composer check
 
 fix: ## Fix the code style automatically (changes files)

@@ -45,6 +45,24 @@ if (editor) {
   const showState = guard.update;
   textarea.addEventListener('input', showState);
   showState();
+  // Privacy page: copy the Bioly section, or add it to the end of the own text.
+  const block = document.querySelector('[data-legal-block-text]');
+  const status = document.querySelector('[data-legal-block-status]');
+  document.querySelector('[data-legal-block-copy]')?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(block.value);
+    } catch {
+      block.select();
+      document.execCommand('copy');
+    }
+    status.textContent = status.dataset.copied;
+  });
+  form.querySelector('[data-legal-block-insert]')?.addEventListener('click', () => {
+    textarea.value = `${textarea.value.trimEnd()}${textarea.value.trim() ? '\n\n' : ''}${block.value}\n`;
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    textarea.focus();
+  });
+
   form.querySelector('[data-action="discard"]').addEventListener('click', (event) => {
     if (!window.confirm(event.currentTarget.dataset.confirm)) {
       return;

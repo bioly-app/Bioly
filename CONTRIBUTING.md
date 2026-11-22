@@ -47,4 +47,4 @@ Thanks for helping! Please keep these rules in mind.
 
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
 - Versions follow [Semantic Versioning](https://semver.org)
-- Before a pull request: `make check` must pass (the same checks run in CI)
+- Before a pull request: `make check` must pass. There is no CI: the checks run locally

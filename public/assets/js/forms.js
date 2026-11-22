@@ -52,6 +52,17 @@ document.querySelectorAll('[data-password-rules]').forEach((list) => {
   update();
 });
 
+// ---------------------------------------------------------------- ask first
+
+// Forms with data-confirm (install an update, restore a backup) ask before they are sent.
+document.querySelectorAll('form[data-confirm]').forEach((form) => {
+  form.addEventListener('submit', (event) => {
+    if (!window.confirm(form.dataset.confirm)) {
+      event.preventDefault();
+    }
+  });
+});
+
 // ---------------------------------------------------------------- no double submit
 
 document.querySelectorAll('form[method="post"]:not([data-no-busy])').forEach((form) => {

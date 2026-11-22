@@ -36,6 +36,11 @@ use Bioly\Support\SiteUrl;
 use Bioly\Theme\Theme;
 use Bioly\Twig\AppExtension;
 use Bioly\Update\AfterUpdate;
+use Bioly\Update\Backups;
+use Bioly\Update\HttpClient;
+use Bioly\Update\ReleaseFeed;
+use Bioly\Update\UpdateCheck;
+use Bioly\Update\Updater;
 use LogicException;
 use PDO;
 use Slim\Views\Twig;
@@ -319,6 +324,42 @@ final class Services
             (string) $this->settings['version'],
             $this->path('cache') . '/version',
         ));
+    }
+
+    public function updater(): Updater
+    {
+        return $this->once(Updater::class, fn() => new Updater(
+            $this->path('root'),
+            $this->path('updates'),
+            (string) $this->settings['version'],
+            $this->backups(),
+            $this->settings['env'] === 'dev',
+        ));
+    }
+
+    public function backups(): Backups
+    {
+        return $this->once(Backups::class, fn() => new Backups($this->path('backups'), $this->path('root'), $this->pdo(), $this->path('uploads'), $this->path('migrations'), (string) $this->settings['version']));
+    }
+
+    public function updateCheck(): UpdateCheck
+    {
+        return $this->once(UpdateCheck::class, fn() => new UpdateCheck(
+            $this->settingsRepository(),
+            new ReleaseFeed($this->httpClient()),
+            (string) $this->settings['version'],
+        ));
+    }
+
+    public function httpClient(): HttpClient
+    {
+        return $this->once(HttpClient::class, fn() => new HttpClient('Bioly/' . $this->settings['version'] . ' (+https://github.com/bioly-app/bioly)'));
+    }
+
+    /** Test zips from "make zip" are not signed: only the local test site allows them. */
+    public function allowUnsignedUpdates(): bool
+    {
+        return getenv('BIOLY_ALLOW_UNSIGNED_UPDATES') === '1';
     }
 
     public function publisher(): Publisher

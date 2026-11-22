@@ -17,6 +17,36 @@
 </nav>
 
 <div class="notice notice--info">{{ 'legal.note'|t }}</div>
+{% if type == 'privacy' %}
+{# Own area between two lines, folds open and shut. Checking the own text is up to the operator. #}
+<hr class="legal-block__line">
+<details class="legal-block" data-legal-block>
+  <summary class="legal-block__summary">
+    <span class="legal-block__head">
+      <span class="legal-block__title">{{ 'legal.block.title'|t }}</span>
+      <span class="legal-block__hint">{{ 'legal.block.hint'|t }}</span>
+    </span>
+    <span class="legal-block__toggle" aria-hidden="true">
+      <span class="legal-block__show">{{ 'legal.block.show'|t }}</span>
+      <span class="legal-block__hide">{{ 'legal.block.hide'|t }}</span>
+      {{ ui_icon('chevron-down', 'legal-block__chevron') }}
+    </span>
+  </summary>
+  <div class="legal-block__body stack">
+    <p>{{ 'legal.block.intro'|t }}</p>
+    <div class="field">
+      <label class="field__label" for="f-block">{{ 'legal.block.label'|t }}</label>
+      <textarea class="input input--editor" id="f-block" rows="10" readonly data-legal-block-text>{{ 'legal.block.text'|t }}</textarea>
+    </div>
+    <div class="row">
+      <button class="button" type="button" data-legal-block-copy>{{ ui_icon('copy', 'button__icon') }}{{ 'legal.block.copy'|t }}</button>
+      <span class="muted small" role="status" data-legal-block-status data-copied="{{ 'legal.block.copied'|t }}"></span>
+    </div>
+    <p class="field__help">{{ 'legal.block.more'|t }}</p>
+  </div>
+</details>
+<hr class="legal-block__line">
+{% endif %}
 <form method="post" action="/admin/legal/{{ type }}" class="stack" data-legal-form{% if url_error %} data-legal-draft="true"{% endif %}>
   {{ m.csrf() }}
   {# Same as on "Page" and "General": changes stay a draft until "Publish". #}
@@ -65,6 +95,7 @@
       <div class="md-preview legal-preview" data-md-output hidden tabindex="0" aria-label="{{ 'md.preview'|t }}"></div>
     </div>
     <p class="field__help" id="f-content-help">{{ 'legal.help'|t }}</p>
+    {% if type == 'privacy' %}<div><button class="button" type="button" data-legal-block-insert>{{ 'legal.block.insert'|t }}</button></div>{% endif %}
   </div>
   <div><button class="button button--primary" type="submit" data-legal-publish disabled>{{ 'editor.publish'|t }}</button></div>
 </form>

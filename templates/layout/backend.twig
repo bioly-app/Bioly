@@ -10,7 +10,7 @@
   {% include 'layout/backend-styles.twig' %}
   <link rel="icon" href="/favicon.svg?v={{ favicon_version }}" type="image/svg+xml">
 </head>
-<body class="admin">
+<body class="admin"{% if update_due %} data-update-check="/admin/updates/auto"{% endif %}>
   <nav class="nav" aria-label="{{ 'nav.main'|t }}">
     <p class="brand">{{ include('partials/logo.twig') }}<span class="brand__name">Bioly</span></p>
     <ul class="nav__list">
@@ -19,12 +19,14 @@
         {url: '/admin/general', label: 'nav.general'|t, icon: 'palette', prefix: null},
         {url: '/admin/media', label: 'nav.media'|t, icon: 'image', prefix: null},
         {url: '/admin/legal/imprint', label: 'nav.legal'|t, icon: 'scale', prefix: '/admin/legal/'},
-        {url: '/admin/settings', label: 'nav.settings'|t, icon: 'settings', prefix: null}
+        {url: '/admin/settings', label: 'nav.settings'|t, icon: 'settings', prefix: null},
+        {url: '/admin/updates', label: 'nav.updates'|t, icon: 'refresh-cw', prefix: null, badge: update_available}
       ] %}
       {% for item in items %}
         {% set active = current_path == item.url or (item.prefix and current_path starts with item.prefix) %}
         <li><a class="nav__link" href="{{ item.url }}"{% if active %} aria-current="page"{% endif %}>
-          {{ ui_icon(item.icon, 'nav__icon') }}{{ item.label }}</a></li>
+          {{ ui_icon(item.icon, 'nav__icon') }}{{ item.label }}
+          {%- if item.badge ?? false %}<span class="nav__badge">{{ 'nav.updates.new'|t }}</span>{% endif %}</a></li>
       {% endfor %}
       <li><a class="nav__link" href="/" target="_blank" rel="noopener">
         {{ ui_icon('external-link', 'nav__icon') }}{{ 'nav.view_site'|t }}</a></li>

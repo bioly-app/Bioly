@@ -11,7 +11,7 @@ All files are original, unchanged icons from [Lucide](https://lucide.dev)
 
 - Copyright (c) 2026 Lucide Icons and Contributors, ISC License
 - Derived from Feather, Copyright (c) 2013-present Cole Bemis, MIT License:
-  `arrow-up-right`, `check`, `chevron-down`, `chevron-left`, `chevron-right`, `chevron-up`, `circle`, `external-link`, `image`, `link`, `log-out`, `minus`, `pause`, `play`, `trash-2`, `upload`, `x`
+  `arrow-up-right`, `check`, `chevron-down`, `chevron-left`, `chevron-right`, `chevron-up`, `circle`, `download`, `external-link`, `image`, `link`, `log-out`, `minus`, `pause`, `play`, `trash-2`, `upload`, `x`
 - Full license text: [`LICENSE.txt`](LICENSE.txt). Each SVG also keeps its `@license` comment.
 
 | File | Used for |
@@ -35,6 +35,11 @@ All files are original, unchanged icons from [Lucide](https://lucide.dev)
 | list | list button in the legal editor |
 | log-out | log out button in the account box |
 | map-pin | place in the countdown module (public page) |
+| copy | copy button (privacy section on the legal page) |
+| package | new version on the Updates page |
+| refresh-cw | "Check for updates" button |
+| archive | "Create backup now" (Updates page) |
+| download | download a backup (Updates page) |
 | message-square-heart | navigation: bugs, wishes, ideas (shown once `Project::FEEDBACK_URL` is set) |
 | minus | line button in the legal editor |
 | palette | navigation: general |

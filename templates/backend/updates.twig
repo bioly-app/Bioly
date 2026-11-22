@@ -1,0 +1,151 @@
+{% extends 'layout/backend.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'update.title'|t }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1 class="page-header__title">{{ 'update.title'|t }}</h1>
+    <p class="muted">{{ 'update.intro'|t }}</p>
+  </div>
+</header>
+
+{% for reason in blockers %}
+  <div class="notice notice--warn"><p>{{ reason }}</p></div>
+{% endfor %}
+
+{# Version and update in one place: what is installed, what is new, one button. #}
+<section class="panel" aria-labelledby="u-version">
+  <div class="update-status">
+    <div class="update-status__current">
+      <h2 class="update-status__version" id="u-version">Bioly {{ app.version }}</h2>
+      <span class="muted small">PHP {{ php_version }} · SQLite {{ sqlite_version }}</span>
+    </div>
+    {% if state.available %}
+      <span class="badge badge--ok">{{ 'update.badge.available'|t }}</span>
+    {% elseif state.error %}
+      <span class="badge badge--warn">{{ 'update.badge.error'|t }}</span>
+    {% elseif state.checked_at %}
+      <span class="badge">{{ 'update.badge.current'|t }}</span>
+    {% endif %}
+  </div>
+
+  {% if state.available %}
+    <div class="update-new">
+      <span class="update-new__icon" aria-hidden="true">{{ ui_icon('package', 'update-new__svg') }}</span>
+      <span class="update-new__text">
+        <strong>Bioly {{ state.latest.version }}</strong>
+        <span class="muted small">{{ 'update.size'|t({size: (state.latest.size / 1048576)|number_format(1, ',', '.')}) }} · <a href="{{ state.latest.page }}" target="_blank" rel="noopener">{{ 'update.notes'|t }}</a></span>
+      </span>
+      <form method="post" action="/admin/updates/install" data-confirm="{{ 'update.install.confirm'|t({version: state.latest.version}) }}">
+        {{ m.csrf() }}
+        <button class="button button--primary" type="submit"{% if blockers %} disabled{% endif %}>{{ 'update.install.short'|t }}</button>
+      </form>
+    </div>
+    {% if state.latest.notes %}
+      <details class="disclosure">
+        <summary class="disclosure__summary">{{ 'update.whats_new'|t }}{{ ui_icon('chevron-down', 'disclosure__chevron') }}</summary>
+        <pre class="update-notes">{{ state.latest.notes }}</pre>
+      </details>
+    {% endif %}
+    <p class="muted small">{{ 'update.install.help'|t }}</p>
+  {% elseif state.error %}
+    <p class="muted small">{{ state.error|t }}</p>
+  {% endif %}
+
+  <div class="update-row">
+    <form method="post" action="/admin/updates/check">
+      {{ m.csrf() }}
+      <button class="button button--ghost" type="submit">{{ ui_icon('refresh-cw', 'button__icon') }}{{ 'update.check'|t }}</button>
+    </form>
+    <span class="muted small">
+      {%- if state.checked_at %}{{ 'update.checked_at'|t({date: state.checked_at|date('d.m.Y, H:i', timezone)}) }}{% else %}{{ 'update.never_checked'|t }}{% endif -%}
+    </span>
+  </div>
+
+  <form method="post" action="/admin/updates/settings" class="update-row update-row--line" data-no-busy>
+    {{ m.csrf() }}
+    <span class="update-row__text">
+      <span class="update-row__label" id="u-auto">{{ 'update.auto'|t }}</span>
+      <span class="muted small">{{ 'update.auto.help'|t }}</span>
+    </span>
+    <button class="switch" type="submit" name="auto" value="{{ auto ? '0' : '1' }}" role="switch" aria-checked="{{ auto ? 'true' : 'false' }}" aria-labelledby="u-auto"></button>
+  </form>
+
+  <details class="disclosure update-row--line">
+    <summary class="disclosure__summary">{{ 'update.manual_title'|t }}{{ ui_icon('chevron-down', 'disclosure__chevron') }}</summary>
+    <div class="disclosure__body stack">
+      <p class="muted small">{{ 'update.manual.intro'|t }} <a href="{{ releases_url }}" target="_blank" rel="noopener">{{ 'update.manual.releases'|t }}</a></p>
+      <form method="post" action="/admin/updates/upload" enctype="multipart/form-data" class="upload-row" data-confirm="{{ 'update.upload.confirm'|t }}">
+        {{ m.csrf() }}
+        <label class="visually-hidden" for="u-zip">{{ 'update.upload.label'|t }}</label>
+        <input class="file-input" id="u-zip" name="zip" type="file" accept=".zip,application/zip" required aria-describedby="u-zip-help">
+        <button class="button" type="submit"{% if blockers %} disabled{% endif %}>{{ ui_icon('upload', 'button__icon') }}{{ 'update.upload'|t }}</button>
+      </form>
+      <p class="field__help" id="u-zip-help">{{ 'update.upload.help'|t({mb: upload_max_mb}) }} {{ 'update.manual.ftp'|t }}</p>
+    </div>
+  </details>
+</section>
+
+<section class="panel" aria-labelledby="u-backups">
+  <div class="panel__head update-head">
+    <div>
+      <h2 class="panel__title" id="u-backups">{{ 'update.backups'|t }}</h2>
+      <p class="muted small">{{ 'update.backups.help'|t({n: constant('Bioly\\Update\\Backups::KEEP')}) }}</p>
+    </div>
+    <form method="post" action="/admin/updates/backup">
+      {{ m.csrf() }}
+      <button class="button" type="submit">{{ ui_icon('archive', 'button__icon') }}{{ 'update.backup.create'|t }}</button>
+    </form>
+  </div>
+
+  <form method="post" action="/admin/updates/backup/upload" enctype="multipart/form-data" class="stack">
+    {{ m.csrf() }}
+    <label class="field__label" for="u-backup">{{ 'update.backup.upload.label'|t }}</label>
+    <div class="upload-row">
+      <input class="file-input" id="u-backup" name="backup" type="file" accept=".zip,application/zip" required aria-describedby="u-backup-help">
+      <button class="button button--ghost" type="submit">{{ ui_icon('upload', 'button__icon') }}{{ 'update.backup.upload'|t }}</button>
+    </div>
+    <p class="field__help" id="u-backup-help">{{ 'update.backup.upload.help'|t({mb: upload_max_mb}) }}</p>
+  </form>
+
+  {% if backups %}
+    <ul class="update-backups">
+      {% for backup in backups %}
+        <li class="update-backups__item">
+          <span class="update-backups__text">
+            <span class="update-backups__title">
+              <strong>Bioly {{ backup.version }}</strong>
+              {% if backup.kind == 'manual' %}
+                <span class="badge badge--accent">{{ 'update.backup.kind.manual'|t }}</span>
+              {% else %}
+                <span class="badge">{{ 'update.backup.kind.update'|t }}</span>
+              {% endif %}
+            </span>
+            <span class="muted small">{{ backup.created_at|date('d.m.Y, H:i', timezone) }} · {{ backup.kind == 'manual' ? 'update.backup.content.manual'|t : 'update.backup.content.update'|t }} · {{ (backup.size / 1048576)|number_format(1, ',', '.') }} MB</span>
+          </span>
+          <span class="update-backups__actions">
+            {% if backup.kind == 'manual' %}
+              <a class="icon-button" href="/admin/updates/backup/{{ backup.id }}/download" aria-label="{{ 'update.backup.download'|t }}" title="{{ 'update.backup.download'|t }}">{{ ui_icon('download', 'icon-button__icon') }}</a>
+            {% endif %}
+            <form method="post" action="/admin/updates/backup/{{ backup.id }}/delete" data-confirm="{{ 'update.backup.delete.confirm'|t }}" data-no-busy>
+              {{ m.csrf() }}
+              <button class="icon-button" type="submit" aria-label="{{ 'update.backup.delete'|t }}" title="{{ 'update.backup.delete'|t }}">{{ ui_icon('trash-2', 'icon-button__icon') }}</button>
+            </form>
+            <form method="post" action="/admin/updates/restore/{{ backup.id }}" data-confirm="{{ (backup.kind == 'manual' ? 'update.restore.confirm.manual' : 'update.restore.confirm')|t({version: backup.version}) }}">
+              {{ m.csrf() }}
+              <button class="button" type="submit"{% if blockers and backup.kind == 'update' %} disabled{% endif %}>{{ 'update.restore'|t }}</button>
+            </form>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="update-empty muted">{{ 'update.backups.none'|t }}</p>
+  {% endif %}
+
+  <details class="disclosure">
+    <summary class="disclosure__summary">{{ 'update.backups.what'|t }}{{ ui_icon('chevron-down', 'disclosure__chevron') }}</summary>
+    <p class="disclosure__body muted small">{{ 'update.backups.content'|t }}</p>
+  </details>
+</section>
+{% endblock %}

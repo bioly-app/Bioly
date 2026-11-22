@@ -9,6 +9,7 @@ use Bioly\Http\Controller\Admin\EditorController;
 use Bioly\Http\Controller\Admin\LegalController;
 use Bioly\Http\Controller\Admin\MediaController;
 use Bioly\Http\Controller\Admin\SettingsController;
+use Bioly\Http\Controller\Admin\UpdatesController;
 use Bioly\Http\Controller\AuthController;
 use Bioly\Http\Controller\InstallController;
 use Bioly\Http\Controller\SiteController;
@@ -33,6 +34,7 @@ final class Routes
         $legal = new LegalController($services);
         $media = new MediaController($services);
         $credits = new CreditsController($services);
+        $updates = new UpdatesController($services);
         $session = new StartSession($services);
 
         // Public link page: no session, no cookie
@@ -51,7 +53,7 @@ final class Routes
             $group->post('', [$install, 'submit']);
         })->add($session);
 
-        $app->group('/admin', function (RouteCollectorProxy $group) use ($auth, $editor, $settings, $legal, $media, $credits, $services): void {
+        $app->group('/admin', function (RouteCollectorProxy $group) use ($auth, $editor, $settings, $legal, $media, $credits, $updates, $services): void {
             $group->get('/login', [$auth, 'loginForm']);
             $group->post('/login', [$auth, 'login']);
             $group->get('/forgot', [$auth, 'forgotForm']);
@@ -61,7 +63,7 @@ final class Routes
             $group->get('/reset', [$auth, 'resetForm']);
             $group->post('/reset', [$auth, 'reset']);
 
-            $group->group('', function (RouteCollectorProxy $admin) use ($auth, $editor, $settings, $legal, $media, $credits): void {
+            $group->group('', function (RouteCollectorProxy $admin) use ($auth, $editor, $settings, $legal, $media, $credits, $updates): void {
                 $admin->post('/logout', [$auth, 'logout']);
 
                 $admin->get('', [$editor, 'show']);
@@ -91,6 +93,18 @@ final class Routes
                 $admin->post('/media/upload', [$media, 'upload']);
                 $admin->post('/media/{id:[0-9]+}/save', [$media, 'save']);
                 $admin->post('/media/{id:[0-9]+}/delete', [$media, 'delete']);
+
+                $admin->get('/updates', [$updates, 'show']);
+                $admin->post('/updates/check', [$updates, 'check']);
+                $admin->post('/updates/auto', [$updates, 'auto']);
+                $admin->post('/updates/settings', [$updates, 'settings']);
+                $admin->post('/updates/install', [$updates, 'install']);
+                $admin->post('/updates/upload', [$updates, 'upload']);
+                $admin->post('/updates/restore/{id:[0-9A-Za-z.-]+}', [$updates, 'restore']);
+                $admin->post('/updates/backup', [$updates, 'backup']);
+                $admin->post('/updates/backup/upload', [$updates, 'uploadBackup']);
+                $admin->get('/updates/backup/{id:[0-9A-Za-z.-]+}/download', [$updates, 'download']);
+                $admin->post('/updates/backup/{id:[0-9A-Za-z.-]+}/delete', [$updates, 'deleteBackup']);
 
                 $admin->get('/legal/{type:imprint|privacy}', [$legal, 'show']);
                 $admin->post('/legal/{type:imprint|privacy}', [$legal, 'save']);

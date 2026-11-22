@@ -22,7 +22,8 @@ services:
     ports:
       - "8025:8025"
 
-  # Oldest supported PHP version, used by the CI tests
+  # Oldest supported PHP version, to try something on PHP 8.3 by hand:
+  # docker compose --profile compat run --rm compat composer test
   compat:
     build:
       context: .
@@ -44,6 +45,10 @@ services:
       - testsite:/var/www/html
       - ./dist:/dist:ro
       - ./docker/install-zip.sh:/usr/local/bin/bioly-install-zip:ro
+    environment:
+      # Test zips from "make zip" are not signed. Only this test site may install them
+      # as an update (Updates page); real installations accept signed zips only.
+      BIOLY_ALLOW_UNSIGNED_UPDATES: "1"
     profiles: ["testsite"]
 
 volumes:

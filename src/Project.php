@@ -14,4 +14,9 @@ final class Project
      * Empty until the website exists: the menu entry stays hidden.
      */
     public const FEEDBACK_URL = '';
+
+    /** Public repository on GitHub: releases for download and for the updater. */
+    public const GITHUB_REPO = 'bioly-app/bioly';
+
+    public const RELEASES_URL = 'https://github.com/' . self::GITHUB_REPO . '/releases';
 }
