@@ -1,0 +1,16 @@
+name: Idea or wish
+description: A new feature, module or improvement
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: Describe the idea and what it would help you with.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: How should it look or work? Screenshots or links to other tools are welcome.

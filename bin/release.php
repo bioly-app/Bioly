@@ -19,7 +19,7 @@ const EXCLUDE = [
     'Dockerfile', 'docker-compose.yml', 'Makefile',
     'phpunit.xml', 'phpstan.neon', '.php-cs-fixer.dist.php', '.php-cs-fixer.cache',
     '.editorconfig', '.gitignore', '.gitattributes', '.env',
-    'CONTRIBUTING.md', 'bin/release.php', 'bin/seed.php', 'bin/keys.php', 'bin/import-brand-icons.php',
+    'CONTRIBUTING.md', '.env.example', 'bin/release.php', 'bin/publish.php', 'bin/seed.php', 'bin/keys.php', 'bin/import-brand-icons.php',
 ];
 
 // Inside data/ only the .htaccess is shipped: it keeps the folder in the zip and blocks web access to it.
@@ -247,4 +247,4 @@ file_put_contents($changelogFile, $released);
 
 echo "\n✓ Built dist/bioly-{$new}.zip (signed)\n";
 echo "  VERSION and CHANGELOG.md were updated.\n";
-echo "  Next: check the changelog, then commit and tag v{$new} yourself.\n";
+echo "  Next: check the changelog, commit VERSION and CHANGELOG.md, then make publish.\n";

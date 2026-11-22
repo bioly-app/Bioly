@@ -8,7 +8,7 @@ TESTSITE = $(COMPOSE) --profile testsite
 
 .DEFAULT_GOAL := help
 .PHONY: help reset-demo reset-empty migrate check fix check-icons \
-        zip testsite testsite-reset keys release
+        zip testsite testsite-reset keys release publish
 
 help: ## Show all commands
 	@awk 'BEGIN {FS = ":.*## "} /^##@/ {printf "\n\033[1m%s\033[0m\n", substr($$0, 5)} /^[a-z-]+:.*## / {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -57,3 +57,6 @@ keys: ## Create your signing key pair (only once, ever; asks twice)
 
 release: ## Build the signed release zip, set VERSION and CHANGELOG (asks for the new version)
 	$(COMPOSE) run --rm --entrypoint php app bin/release.php
+
+publish: ## Put the release from make release on GitHub: push main and tag, create the release with the zip (asks first)
+	$(COMPOSE) run --rm --entrypoint php app bin/publish.php

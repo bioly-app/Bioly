@@ -1,74 +1,66 @@
 # Bioly
 
-Self-hosted link page with a simple backend. Upload the zip, point your webroot to `/public`, open your domain, done.
+**Your own link page, on your own web space.** Like Linktree, but self-hosted: no account, no tracking, no monthly fee. Upload the zip, point your webroot to `/public`, open your domain, done.
 
-> Status: 0.x, in development. Not ready for production yet.
+<p align="center">
+  <img src="docs/images/page.png" alt="A Bioly link page on a phone: header with name and bio, links to Instagram, Telegram and music" width="300">
+  &nbsp;&nbsp;
+  <img src="docs/images/editor.png" alt="The Bioly backend: list of modules on the left, live preview on the right" width="560">
+</p>
 
-## What works in this version
+<p align="center">
+  <a href="https://github.com/bioly-app/bioly/releases/latest"><b>Download</b></a> ·
+  <a href="docs/README.md">Documentation</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/bioly-app/bioly/issues">Bugs and ideas</a>
+</p>
 
-- Installer: system check, admin account, optional SMTP with confirmation code, site address
-- Login after NIST SP 800-63B-4 (long passwords, lock per address and account, session timeouts), CSRF protection, strict Content Security Policy, password reset by email or by FTP file
-- Link page with header (image, bio, quicklinks), links, multilinks and dividers, image module and slider
-- Multilinks: links loaded only on demand, blocked in in-app browsers, optional age check, limited to 20 requests per minute and address
-- Backend: drag and drop, draft, live preview, publish
-- Design: colors with contrast checks, header and background patterns, background image, icon style, radius, favicon
-- Media library for images and own icons, with alt texts and usage check
-- Icons from color folders (`resources/icons/<color>/`) and platform logos, icon picker with color filter
-- Link previews in messengers and social networks (Open Graph), canonical address
-- Imprint and privacy pages (Markdown editor or external link), 404 page
-- Backend in German and English
-- Signed release zips (`make keys`, `make release`); after an update the first request runs migrations and rebuilds the page
+> Status: 0.x. Bioly works and updates itself, but is still young. Feedback is very welcome.
 
-Planned next: updater in the backend (download, check signature, backup and rollback), contact module.
+## Features
 
-## Requirements
+- **Modules:** links, multilinks (folded link lists), images and sliders, countdown to your next event, dividers
+- **Header:** picture, name, bio and up to five quicklinks
+- **Design without code:** colors with contrast check, patterns, background image, icon style, corners, favicon, dark and light
+- **150 icons and 57 platform logos**, plus your own SVG icons
+- **Draft and live preview:** nothing is online until you click "Publish"
+- **Media library** with alt texts and a check where each file is used
+- **Privacy first:** no cookies on the link page, no external fonts or scripts, a ready text for your privacy policy
+- **Secure:** modern login rules, strict Content Security Policy, signed updates
+- **Updates and backups in the backend:** one-click updates with automatic backup and rollback; own backups to download and move your page to another installation
+- **Imprint and privacy pages** (own text or link), link previews for messengers (Open Graph)
+- Backend in **German and English**
 
-- PHP 8.3 or newer with `pdo_sqlite`, `mbstring`, `sodium`, `fileinfo` (recommended: `gd`, `zip`, `intl`)
-- SQLite 3.37 or newer
-- Apache with `mod_rewrite` (Nginx works with your own config)
-- Webroot pointing to the `/public` folder, `data/` writable for PHP
+## Installation
+
+You need web space with PHP. Most shared hosting packages work.
+
+1. [Download the latest release](https://github.com/bioly-app/bioly/releases/latest) (`bioly-X.Y.Z.zip`) and unpack it
+2. Upload the folder by FTP and point your domain to its `public/` folder
+3. Open your domain: the installer checks the server, creates your account and optionally sets up email
+
+**Requirements:** PHP 8.3 or newer with `pdo_sqlite`, `mbstring`, `sodium`, `fileinfo` (recommended: `gd`, `zip`, `intl`), SQLite 3.37 or newer, Apache with `mod_rewrite` (Nginx works with your own config), `data/` writable for PHP.
+
+**Updates:** Bioly checks once a day for a new version and installs it from the backend (Updates), with a backup first. Without the updater, copy the new files over the old ones by FTP; `data/` stays untouched.
 
 ## Development
 
-You need Docker and `make`. Run `make` to see all commands; the full flow is explained in `docs/10-arbeitsablauf.md` (German).
+You need Docker and `make`. `make` lists all commands; the full workflow is in [docs/10-arbeitsablauf.md](docs/10-arbeitsablauf.md) (German).
 
 | Step | Commands |
 | --- | --- |
-| Develop | `docker compose up --build` (site http://localhost:8080, backend `/admin`, user `admin`, password `Bioly-Demo-2026`, mail http://localhost:8025), `make reset-demo`, `make reset-empty`, `make migrate` |
-| Check before every commit | `make check` runs all checks: code style, PHPStan, tests, icons, `composer audit`. `make fix` corrects the code style, `make check-icons` checks only the icon folders |
-| Try an update | `make zip` builds a test zip (not signed), `make testsite` puts it into a separate test site on http://localhost:8081 like an FTP upload, `make testsite-reset` empties it |
-| Release | `make keys` (once, ever; asks twice), `make release` |
+| Develop | `docker compose up --build`: site http://localhost:8080, backend `/admin` (user `admin`, password `Bioly-Demo-2026`), mail http://localhost:8025. `make reset-demo`, `make reset-empty`, `make migrate` |
+| Check before every commit | `make check` (code style, PHPStan, tests, icons, `composer audit`), `make fix` corrects the code style |
+| Try an update | `make zip` builds an unsigned test zip, `make testsite` puts it into a separate test site on http://localhost:8081 |
+| Release (maintainers) | `make release`, then `make publish` |
 
-On the first start a seed script creates the admin user and demo content, so the installer is skipped. New migrations run automatically on every start.
+The developer documentation (German) explains the [architecture](docs/01-aufbau.md), [how to build a module](docs/03-module.md), [icons](docs/04-icons.md), [design](docs/06-design.md) and [security](docs/09-sicherheit.md).
 
-## Icons
+## Contributing
 
-One folder per color in `resources/icons/`, colors in `resources/icons/colors.json`.
-Download an icon from [lucide.dev](https://lucide.dev/icons) as SVG and put it into the folder of its color. Done.
-Multi-colored logos go to `resources/originals/`. Patterns go to `public/assets/patterns/` (see the README there).
-
-## Release
-
-`make keys` once creates your private key in `~/.bioly/signing.key` and writes the public key into `src/Update/PublicKey.php` (commit that).
-During development `VERSION` stays as it is and every change goes under `## [Unreleased]` in `CHANGELOG.md`. `make release` asks for the new version, checks that it is higher than `VERSION` and that `[Unreleased]` has entries, asks for confirmation, and builds `dist/bioly-X.Y.Z.zip` with a signed manifest. Commit and tag yourself.
-
-## Project structure
-
-```
-bin/          command line scripts
-config/       static settings
-data/         database, uploads, cache, logs (never in git, never replaced by updates)
-docker/       dev container files
-lang/         translations (de.json, en.json)
-migrations/   database migrations, applied in order
-public/       webroot
-resources/    icons and original logos
-src/          PHP source (namespace Bioly), modules in src/Modules/<Name>/
-templates/    Twig templates
-tests/        PHPUnit tests
-```
+Bug reports, ideas and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) first. Security problems: please report them privately, see [SECURITY.md](SECURITY.md).
 
 ## License
 
-Bioly is free software under the [GNU General Public License v3.0 or later](LICENSE).
+Bioly is open source software under the [GNU General Public License v3.0 or later](LICENSE).
 Copyright (C) 2026 Benedikt Jany. Third-party parts: see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

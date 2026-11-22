@@ -2,6 +2,16 @@
 
 Thanks for helping! Please keep these rules in mind.
 
+## How to contribute
+
+- **Bugs and ideas:** open an [issue](https://github.com/bioly-app/bioly/issues/new/choose). Security problems privately, see [SECURITY.md](SECURITY.md)
+- **Code:** fork the repository, create a branch from `main`, make your change, run `make check`, open a pull request against `main`
+- Describe in the pull request what changes, why, and how to test it. Add a line under `## [Unreleased]` in `CHANGELOG.md`
+- Larger changes or new modules: please open an issue first, so we can agree on the way before you build it
+- Version numbers and releases are done by the maintainers only. Every release is signed
+
+The maintainer develops in a private repository; GitHub gets `main` and the release tags. Accepted pull requests are merged there and come back to GitHub with the next release.
+
 ## Principles
 
 - **KISS, DRY, YAGNI:** keep it simple, don't repeat yourself, only build what is needed

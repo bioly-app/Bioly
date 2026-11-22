@@ -77,7 +77,8 @@ Die Testseite sieht deinen Code-Ordner nie, nur den Inhalt der ZIP. Sie verhält
 | Befehl | Was passiert |
 | --- | --- |
 | `make keys` | erzeugt das Schlüsselpaar zum Signieren. **Nur ein einziges Mal**, ein zweites Paar würde bestehende Installationen von Updates abschneiden. Fragt deshalb zweimal nach: erst `NEW KEY` eintippen, dann noch einmal mit `y` bestätigen |
-| `make release` | fragt nach der neuen Version, baut die **signierte** ZIP in `dist/` und trägt die Version in `VERSION` und im Changelog ein. Danach: prüfen, committen, veröffentlichen |
+| `make release` | fragt nach der neuen Version, baut die **signierte** ZIP in `dist/` und trägt die Version in `VERSION` und im Changelog ein |
+| `make publish` | bringt dieses Release auf GitHub (`bioly-app/bioly`): pusht `main` und den Tag `vX.Y.Z`, legt das Release mit dem Changelog-Abschnitt an und hängt ZIP und Prüfsumme an. Fragt vorher nach. Danach bieten alle Installationen das Update an |
 
 **Versionsnummern:** Während der Entwicklung bleibt `VERSION` unverändert, alles Neue kommt unter `## [Unreleased]` im Changelog. Nur `make release` setzt die Nummer. Testversionen sind immer die Test-ZIPs aus `make zip`, es gibt keine eigenen Vorabversionen.
 
@@ -86,10 +87,29 @@ Die Testseite sieht deinen Code-Ordner nie, nur den Inhalt der ZIP. Sie verhält
 1. `make check` ist grün
 2. Update ausprobieren: `make zip`, `make testsite` (siehe Schritt 3)
 3. `make release`: Version eingeben, die signierte ZIP liegt in `dist/`
-4. Changelog prüfen, `VERSION` und `CHANGELOG.md` committen
-5. Tag `vX.Y.Z` setzen und pushen, ZIP und `.sha256` ans Release hängen
+4. Changelog prüfen, `VERSION` und `CHANGELOG.md` committen und zu Forgejo pushen
+5. `make publish`, danach den Tag auch zu Forgejo pushen: `git push origin vX.Y.Z`
 
-**Kommt noch:** `make publish` pusht `main` und den Tag `vX.Y.Z` zu GitHub (`bioly-app/bioly`) und legt dort das Release mit ZIP, Prüfsumme und Changelog an. Erst dann sehen die Installationen das Update. Es gibt keine Actions; alles läuft lokal.
+**`make publish` geht nur, wenn alles passt.** Es bricht ab und ändert nichts, wenn:
+
+- `VERSION` keine echte Versionsnummer ist (also `make release` noch nicht lief)
+- die signierte ZIP dieser Version in `dist/` fehlt, nicht signiert ist oder ihre Prüfsumme nicht stimmt
+- der Changelog keinen Abschnitt für die Version hat
+- nicht auf `main` gearbeitet wird oder es noch nicht committete Änderungen gibt
+- der letzte Commit nicht diese `VERSION` enthält
+- das Release auf GitHub schon existiert: so wird keine Version doppelt veröffentlicht
+
+Schlägt das Anlegen des Releases auf halbem Weg fehl, einfach `make publish` noch einmal ausführen.
+
+**Token für GitHub:** `make publish` braucht ein Token in der Datei `.env` im Projektordner (Vorlage: `.env.example`). Die Datei kommt nie in Git und nie in eine ZIP.
+
+1. GitHub > Profilbild > Settings > Developer settings > Personal access tokens > Fine-grained tokens > „Generate new token“
+2. Resource owner `bioly-app`, Repository `bioly`, Permission „Contents: Read and write“, Ablauf 1 Jahr
+3. `.env` anlegen mit der Zeile `GITHUB_TOKEN=github_pat_…`
+
+Läuft das Token ab, meldet `make publish` „GitHub refused the token“. Dann ein neues erstellen und in `.env` ersetzen.
+
+**GitHub-Repo:** Dort liegen nur `main`, die Tags und die Releases. Entwickelt wird auf Forgejo. Das Repo muss öffentlich sein, damit Installationen Updates finden und herunterladen können.
 
 Dazu von Hand:
 
