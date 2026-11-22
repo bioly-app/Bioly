@@ -1,0 +1,6 @@
+{
+  "module.divider.name": "Trenner",
+  "module.divider.description": "Linie mit optionalem Titel für mehr Struktur",
+  "module.divider.title": "Titel",
+  "module.divider.title.help": "Optional. Ohne Titel erscheint nur eine Linie."
+}

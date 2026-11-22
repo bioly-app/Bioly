@@ -1,0 +1,39 @@
+{% extends 'layout/backend.twig' %}
+{% block title %}{{ 'credits.title'|t }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1 class="page-header__title">{{ 'credits.title'|t }}</h1>
+    <p class="muted">{{ 'credits.intro'|t }}</p>
+  </div>
+</header>
+
+<section class="panel" aria-labelledby="credits-parts">
+  <h2 class="panel__title" id="credits-parts">{{ 'credits.parts'|t }}</h2>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th scope="col">{{ 'credits.project'|t }}</th><th scope="col">{{ 'credits.use'|t }}</th><th scope="col">{{ 'credits.license'|t }}</th></tr></thead>
+      <tbody>
+        {% for part in parts %}
+          <tr>
+            <th scope="row"><a href="{{ part.url }}" target="_blank" rel="noopener">{{ part.name }}</a></th>
+            <td>{{ part.use|t }}</td>
+            <td>{{ part.license }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted">{{ 'credits.files'|t }}</p>
+</section>
+
+<section class="panel" aria-labelledby="credits-brands">
+  <h2 class="panel__title" id="credits-brands">{{ 'credits.brands'|t }}</h2>
+  <p>{{ 'credits.brands.text'|t }}</p>
+</section>
+
+<section class="panel" aria-labelledby="credits-bioly">
+  <h2 class="panel__title" id="credits-bioly">Bioly {{ app.version }}</h2>
+  <p>{{ 'credits.bioly'|t }}</p>
+</section>
+{% endblock %}

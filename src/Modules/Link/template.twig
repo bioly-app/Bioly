@@ -1,0 +1,8 @@
+<a class="tile tile--icon-{{ icon.style }}" href="{{ url }}"{% if new_tab %} target="_blank" rel="noopener"{% endif %}>
+  {%- if icon.html %}<span class="tile__icon icon--{{ icon.color }}">{{ icon.html|raw }}</span>{% endif -%}
+  <span class="tile__text">
+    <span class="tile__title">{{ title }}</span>
+    {%- if subtitle %}<span class="tile__subtitle">{{ subtitle }}</span>{% endif -%}
+  </span>
+  {{ ui_icon('arrow-up-right', 'tile__arrow') }}
+</a>

@@ -1,0 +1,5 @@
+{# The backend styles, one file per area. tokens.css comes first: it holds all variables and fixes the
+   layer order, so the order of the other files does not change which rule wins. #}
+{% for part in ['tokens', 'base', 'forms', 'buttons', 'components', 'layout', 'editor', 'pages'] %}
+  <link rel="stylesheet" href="{{ asset('/assets/css/backend/' ~ part ~ '.css') }}">
+{% endfor %}

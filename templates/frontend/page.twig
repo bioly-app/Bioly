@@ -1,0 +1,90 @@
+{% extends 'frontend/base.twig' %}
+
+{% block title %}{{ site.name ?: 'site.links'|t }}{% endblock %}
+
+{% block meta %}
+  {% set page_title = site.name ?: 'site.links'|t %}
+  {% if site.bio %}
+  <meta name="description" content="{{ site.bio }}">
+  {% endif %}
+  {% if preview %}
+  <meta name="robots" content="noindex, nofollow">
+  {% elseif site_url %}
+  <link rel="canonical" href="{{ site_url }}/">
+  {% endif %}
+  {# Link previews in messengers and social networks (Open Graph); they need absolute addresses #}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title }}">
+  <meta property="og:site_name" content="{{ page_title }}">
+  <meta property="og:locale" content="{{ locale == 'en' ? 'en_US' : 'de_DE' }}">
+  {% if site.bio %}
+  <meta property="og:description" content="{{ site.bio }}">
+  {% endif %}
+  {% if site_url %}
+  <meta property="og:url" content="{{ site_url }}/">
+  {% endif %}
+  {% if site_url and site.avatar_url %}
+  <meta property="og:image" content="{{ site_url ~ site.avatar_url }}">
+  {% if site.avatar_alt %}
+  <meta property="og:image:alt" content="{{ site.avatar_alt }}">
+  {% endif %}
+  {% endif %}
+  <meta name="twitter:card" content="summary">
+{% endblock %}
+
+{% block head %}
+  <script type="module" src="{{ asset('/assets/js/site.js') }}"></script>
+  {# Texts for the scripts, as JSON (never executed, so allowed by the CSP). #}
+  {% set site_texts = {
+    close: 'site.close'|t, loading: 'site.multilink.loading'|t, error: 'site.error'|t, tooMany: 'site.too_many'|t,
+    inAppTitle: 'site.inapp.title'|t, inAppText: 'site.inapp.text'|t, inAppOpen: 'site.inapp.open'|t, inAppManual: 'site.inapp.manual'|t,
+    ageTitle: 'site.age.title'|t, ageText: 'site.age.text'|t, ageLegend: 'site.age.legend'|t,
+    ageDay: 'site.age.day'|t, ageMonth: 'site.age.month'|t, ageYear: 'site.age.year'|t, ageConfirm: 'site.age.confirm'|t,
+    ageInvalid: 'site.age.invalid'|t, ageDayInvalid: 'site.age.day_invalid'|t, ageMonthInvalid: 'site.age.month_invalid'|t,
+    ageYearInvalid: 'site.age.year_invalid'|t, ageYoung: 'site.age.too_young'|t, ageNote: 'site.age.note'|t,
+    previewLink: preview ? 'site.preview.link'|t : null,
+  } %}
+  <script type="application/json" id="site-texts">{{ site_texts|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_HEX_APOS') b-or constant('JSON_HEX_QUOT') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}</script>
+{% endblock %}
+
+{% block body_attributes %} data-multilink-endpoint="{{ multilink_endpoint }}"
+  data-in-app="{{ in_app_pattern() }}" data-script-multilink="{{ asset('/assets/js/multilink.js') }}" data-script-slider="{{ asset('/assets/js/slider.js') }}" data-script-countdown="{{ asset('/assets/js/countdown.js') }}"
+  {%- if preview %} data-preview="true"{% endif %}{% endblock %}
+
+{% block background %}
+  {% if theme.background.type == 'image' %}<div class="site__image" aria-hidden="true"></div>
+  {% elseif theme.background.pattern.id %}<div class="site__pattern" aria-hidden="true"></div>{% endif %}
+{% endblock %}
+
+{% block content %}
+  <header class="site-header">
+    {% if theme.header_pattern.id %}<div class="site-header__pattern" aria-hidden="true"></div>{% endif %}
+    <div class="site-header__avatar{% if site.avatar_url %} site-header__avatar--image{% endif %}{% if site.avatar_clear %} site-header__avatar--clear{% endif %}"{% if not site.avatar_alt %} aria-hidden="true"{% endif %}>
+      {%- if site.avatar_url %}<img class="site-header__image" src="{{ site.avatar_url }}" alt="{{ site.avatar_alt }}" width="112" height="112">{% else %}{{ site.initials }}{% endif -%}
+    </div>
+    <h1 class="site-header__name{% if not site.name %} visually-hidden{% endif %}">{{ site.name ?: 'site.links'|t }}</h1>
+    {% if site.bio %}<p class="site-header__bio">{{ site.bio }}</p>{% endif %}
+    {% if site.quicklinks %}
+      <ul class="quicklinks" aria-label="{{ 'site.quicklinks'|t }}">
+        {% for link in site.quicklinks %}
+          <li><a class="quicklinks__link quicklinks__link--{{ link.icon.style }} icon--{{ link.icon.color }}" href="{{ link.url }}" aria-label="{{ link.label }}" title="{{ link.label }}" target="_blank" rel="noopener">{{ link.icon.html|raw }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </header>
+
+  <main class="site__main">
+    {% for group in groups %}
+      {% if group.kind == 'tiles' %}
+        <ul class="tiles">
+          {% for item in group.items %}
+            <li class="tiles__item">{% include item.template with item.vars only %}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        {% include group.items[0].template with group.items[0].vars only %}
+      {% endif %}
+    {% endfor %}
+    <noscript><p class="site-note">{{ 'site.nojs'|t }}</p></noscript>
+  </main>
+{% endblock %}

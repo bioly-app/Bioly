@@ -1,0 +1,7 @@
+# Bioly: the webroot must point to the /public folder.
+# This file blocks everything in case it does not.
+Require all denied
+<Files "index.php">
+    Require all granted
+</Files>
+DirectoryIndex index.php

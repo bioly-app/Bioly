@@ -1,0 +1,53 @@
+{% extends 'layout/plain.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'auth.forgot.title'|t }} · Bioly{% endblock %}
+{% block content %}
+<main class="card card--wide">
+  <a class="back-link" href="/admin/login">{{ 'auth.back_to_login'|t }}</a>
+  <h1 class="card__title">{{ 'auth.forgot.title'|t }}</h1>
+  <p class="muted">{{ 'auth.forgot.intro'|t }}</p>
+
+  <nav class="segmented" aria-label="{{ 'auth.forgot.title'|t }}">
+    <a class="segmented__item" href="/admin/forgot?via=mail"{% if via == 'mail' %} aria-current="page"{% endif %}>{{ 'auth.forgot.via_mail'|t }}</a>
+    <a class="segmented__item" href="/admin/forgot?via=ftp"{% if via == 'ftp' %} aria-current="page"{% endif %}>{{ 'auth.forgot.via_ftp'|t }}</a>
+  </nav>
+
+  {% if via == 'mail' %}
+    {% if not mail_available %}
+      <div class="notice notice--warn">{{ 'auth.forgot.mail_unavailable'|t }}</div>
+    {% else %}
+      {% if sent %}
+        <div class="notice notice--success" role="status">{{ 'auth.forgot.mail_sent'|t }}</div>
+      {% elseif wait >= 3600 %}
+        <div class="notice notice--warn" role="status">{{ 'auth.forgot.limit'|t }}</div>
+      {% elseif wait > 0 %}
+        <div class="notice notice--warn" role="status">{{ 'auth.forgot.wait'|t({seconds: wait}) }}</div>
+      {% endif %}
+      {% if error %}<div class="notice notice--error" role="alert">{{ 'auth.forgot.mail_invalid'|t }}</div>{% endif %}
+      <p>{{ 'auth.forgot.mail_intro'|t }}</p>
+      <form method="post" action="/admin/forgot/mail">
+        {{ m.csrf() }}
+        <button class="button button--primary" type="submit">{{ sent ? 'auth.forgot.resend'|t : 'auth.forgot.send'|t }}</button>
+      </form>
+    {% endif %}
+  {% else %}
+    <p class="muted">{{ 'auth.ftp.intro'|t }}</p>
+    {% if error %}<div class="notice notice--error" role="alert">{{ 'auth.ftp.not_found'|t }}</div>{% endif %}
+    {% if ftp_file %}
+      <ol class="steps">
+        <li>{{ 'auth.ftp.step1'|t }}</li>
+        <li>{{ 'auth.ftp.step2'|t }}</li>
+        <li>{{ 'auth.ftp.step3'|t }}<code class="code-chip">{{ ftp_file }}</code></li>
+        <li>{{ 'auth.ftp.step4'|t }}</li>
+      </ol>
+      <div class="row">
+        <form method="post" action="/admin/forgot/ftp/check">{{ m.csrf() }}<button class="button button--primary" type="submit">{{ 'auth.ftp.check'|t }}</button></form>
+        <form method="post" action="/admin/forgot/ftp">{{ m.csrf() }}<button class="button" type="submit">{{ 'auth.ftp.new'|t }}</button></form>
+      </div>
+      <p class="muted small">{{ 'auth.ftp.valid'|t }}</p>
+    {% else %}
+      <form method="post" action="/admin/forgot/ftp">{{ m.csrf() }}<button class="button button--primary" type="submit">{{ 'auth.ftp.start'|t }}</button></form>
+    {% endif %}
+  {% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'layout/plain.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'install.title'|t }}{% endblock %}
+{% block content %}
+{% if step != 'done' %}
+  <ol class="stepper" aria-label="{{ 'install.title'|t }}">
+    {% for s in steps %}
+      <li class="stepper__item stepper__item--{{ loop.index0 < index ? 'done' : (loop.index0 == index ? 'now' : 'next') }}"{% if loop.index0 == index %} aria-current="step"{% endif %}>
+        <span class="stepper__dot" aria-hidden="true">{{ loop.index0 < index ? '✓' : loop.index }}</span>
+        <span class="stepper__label">{{ ('install.step.' ~ s)|t }}</span>
+      </li>
+    {% endfor %}
+  </ol>
+{% endif %}
+
+<main class="card card--wide">
+  {% if step != 'done' %}
+    <div class="card__top">
+      <p class="eyebrow">{{ 'install.step_of'|t({n: index + 1, total: steps|length}) }}</p>
+      {# Switches the language right away; the whole installer and the new account use it. #}
+      <form method="post" action="/install" class="segmented segmented--small" aria-label="{{ 'install.system.language'|t }}" data-no-busy>
+        {{ m.csrf() }}
+        <input type="hidden" name="action" value="language">
+        {% for l in ['de', 'en'] %}
+          <button class="segmented__item" type="submit" name="locale" value="{{ l }}" lang="{{ l }}" aria-pressed="{{ l == locale ? 'true' : 'false' }}">{{ ('locale.' ~ l)|t }}</button>
+        {% endfor %}
+      </form>
+    </div>
+  {% endif %}
+
+  {% if step == 'system' %}
+    <h1 class="card__title">{{ 'install.system.title'|t }}</h1>
+    <p class="muted">{{ 'install.system.intro'|t }}</p>
+    {% if errors.system is defined %}<div class="notice notice--error" role="alert">{{ errors.system|t }}</div>{% endif %}
+    <ul class="checks">
+      {% for check in checks %}
+        <li class="checks__item checks__item--{{ check.ok ? 'ok' : (check.required ? 'fail' : 'warn') }}">
+          <span class="checks__label">{{ check.label }}{% if check.value %} <span class="muted">({{ check.value }})</span>{% endif %}</span>
+          <span class="badge badge--{{ check.ok ? 'ok' : (check.required ? 'error' : 'warn') }}">{{ check.ok ? 'install.system.ok'|t : 'install.system.missing'|t }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="/install" class="stack">
+      {{ m.csrf() }}
+      <button class="button button--primary" type="submit"{% if not passed %} disabled{% endif %}>{{ 'install.system.start'|t }}</button>
+    </form>
+
+  {% elseif step == 'account' %}
+    <h1 class="card__title">{{ 'install.account.title'|t }}</h1>
+    <p class="muted">{{ 'install.account.intro'|t }}</p>
+    <form method="post" action="/install" class="stack">
+      {{ m.csrf() }}
+      {{ m.input('username', 'auth.username'|t, old.username ?? '', errors, {required: true, autocomplete: 'username'}) }}
+      {{ m.input('email', 'smtp.email'|t, old.email ?? '', errors, {type: 'email', autocomplete: 'email', help: 'install.account.email.help'|t}) }}
+      {{ m.input('password', 'auth.password'|t, '', errors, {type: 'password', required: true, autocomplete: 'new-password', rules: true}) }}
+      {{ m.input('password_repeat', 'install.account.repeat'|t, '', {}, {type: 'password', required: true, autocomplete: 'new-password'}) }}
+      <button class="button button--primary" type="submit">{{ 'common.next'|t }}</button>
+    </form>
+
+  {% elseif step == 'mail' %}
+    <h1 class="card__title">{{ 'install.mail.title'|t }}</h1>
+    <p class="muted">{{ 'install.mail.intro'|t }}</p>
+    {% for key in ['smtp', 'code'] %}{% if errors[key] is defined and key == 'smtp' %}<div class="notice notice--error" role="alert">{{ errors[key]|t }}</div>{% endif %}{% endfor %}
+    {% if not code_sent %}
+      <form method="post" action="/install" class="stack">
+        {{ m.csrf() }}
+        {{ m.input('email', 'smtp.email'|t, old.email ?? user.email, errors, {type: 'email', required: true, help: 'smtp.email.help'|t}) }}
+        {{ m.smtp_fields(smtp, errors, old) }}
+        <div class="row row--between">
+          <button class="button" type="submit" name="action" value="skip" formnovalidate>{{ 'common.skip'|t }}</button>
+          <button class="button button--primary" type="submit" name="action" value="save">{{ 'install.mail.send'|t }}</button>
+        </div>
+      </form>
+    {% else %}
+      <div class="notice notice--success" role="status">{{ 'install.mail.code_sent'|t({email: user.email}) }}</div>
+      <form method="post" action="/install" class="stack">
+        {{ m.csrf() }}
+        {{ m.input('code', 'smtp.code'|t, '', errors, {required: true, inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 6, help: 'smtp.code.help'|t}) }}
+        <div class="row row--between">
+          <span class="row">
+            <button class="button" type="submit" name="action" value="skip" formnovalidate>{{ 'common.skip'|t }}</button>
+            <button class="button button--ghost" type="submit" name="action" value="resend" formnovalidate>{{ 'install.mail.resend'|t }}</button>
+          </span>
+          <button class="button button--primary" type="submit" name="action" value="verify">{{ 'install.mail.verify'|t }}</button>
+        </div>
+      </form>
+    {% endif %}
+
+  {% elseif step == 'basics' %}
+    <h1 class="card__title">{{ 'install.basics.title'|t }}</h1>
+    <p class="muted">{{ 'install.basics.intro'|t }}</p>
+    <form method="post" action="/install" class="stack">
+      {{ m.csrf() }}
+      {{ m.input('name', 'editor.profile.name'|t, old.name ?? '', errors, {maxlength: 80, help: 'editor.profile.name.help'|t}) }}
+      {{ m.input('bio', 'editor.profile.bio'|t, old.bio ?? '', errors, {maxlength: 300, help: 'editor.profile.bio.help'|t}) }}
+      {{ m.input('accent', 'design.accent'|t, old.accent ?? brand, errors, {type: 'color', help: 'design.accent.help'|t}) }}
+      <div class="row row--between">
+        <button class="button" type="submit" name="action" value="skip" formnovalidate>{{ 'common.skip'|t }}</button>
+        <button class="button button--primary" type="submit" name="action" value="save">{{ 'install.basics.finish'|t }}</button>
+      </div>
+    </form>
+
+  {% else %}
+    <h1 class="card__title">{{ 'install.done.title'|t }}</h1>
+    <p>{{ 'install.done.text'|t }}</p>
+    <div class="row">
+      <a class="button button--primary" href="/admin">{{ 'install.done.backend'|t }}</a>
+      <a class="button" href="/" target="_blank" rel="noopener">{{ 'install.done.site'|t }}</a>
+    </div>
+  {% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,26 @@
+# Dependencies
+/vendor/
+
+# Build output
+/dist/
+
+# Runtime data (database, uploads, cache, logs, backups)
+/data/*
+!/data/.gitkeep
+!/data/.htaccess
+
+# Tooling caches
+/.phpunit.cache/
+/.php-cs-fixer.cache
+
+# Local environment
+.env
+
+# Internal notes of the maintainer (release process), never in Git or a release
+/.intern/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/

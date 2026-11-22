@@ -1,0 +1,15 @@
+{% extends 'layout/plain.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'auth.reset.title'|t }} · Bioly{% endblock %}
+{% block content %}
+<main class="card card--narrow">
+  <h1 class="card__title">{{ 'auth.reset.title'|t }}</h1>
+  {% set errors = error is defined ? {password: error} : {} %}
+  <form method="post" action="/admin/reset" class="stack">
+    {{ m.csrf() }}
+    {{ m.input('password', 'auth.reset.password'|t, '', errors, {type: 'password', required: true, autocomplete: 'new-password', rules: true}) }}
+    {{ m.input('password_repeat', 'auth.reset.repeat'|t, '', {}, {type: 'password', required: true, autocomplete: 'new-password'}) }}
+    <button class="button button--primary button--wide" type="submit">{{ 'auth.reset.submit'|t }}</button>
+  </form>
+</main>
+{% endblock %}

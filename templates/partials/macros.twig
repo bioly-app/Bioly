@@ -1,0 +1,86 @@
+{# Form helpers used by backend, installer and auth pages. #}
+
+{% macro field(name, label, control, errors, help, required) %}
+  <div class="field{% if errors[name] is defined %} field--error{% endif %}">
+    <label class="field__label" for="f-{{ name }}">{{ label }}{% if required %} <span class="field__required" aria-hidden="true">*</span>{% endif %}</label>
+    {{ control|raw }}
+    {% if errors[name] is defined %}
+      <p class="field__error" id="f-{{ name }}-error">{{ errors[name]|t }}</p>
+    {% endif %}
+    {% if help %}<p class="field__help" id="f-{{ name }}-help">{{ help }}</p>{% endif %}
+  </div>
+{% endmacro %}
+
+{% macro input(name, label, value, errors, options) %}
+  {% import _self as h %}
+  {% set o = {type: 'text', help: '', required: false, autocomplete: null, inputmode: null, maxlength: null, rules: false}|merge(options|default({})) %}
+  {% set described = [errors[name] is defined ? 'f-' ~ name ~ '-error' : null, o.help ? 'f-' ~ name ~ '-help' : null, o.rules ? 'f-' ~ name ~ '-rules' : null]|filter(v => v)|join(' ') %}
+  {% set control %}
+    {% if o.type == 'password' %}<div class="password-field">{% endif %}
+    <input class="input" id="f-{{ name }}" name="{{ name }}" type="{{ o.type }}" value="{{ o.type == 'password' ? '' : value }}"
+      {%- if o.required %} required{% endif %}
+      {%- if o.autocomplete %} autocomplete="{{ o.autocomplete }}"{% endif %}
+      {%- if o.inputmode %} inputmode="{{ o.inputmode }}"{% endif %}
+      {%- if o.maxlength %} maxlength="{{ o.maxlength }}"{% endif %}
+      {%- if errors[name] is defined %} aria-invalid="true"{% endif %}
+      {%- if described %} aria-describedby="{{ described }}"{% endif %}>
+    {% if o.type == 'password' %}
+      {# Shown by forms.js; without JavaScript the field simply stays hidden text. #}
+      <button class="password-field__toggle" type="button" hidden data-password-toggle="f-{{ name }}" aria-controls="f-{{ name }}" aria-pressed="false"
+        aria-label="{{ 'password.show'|t }}" data-label-show="{{ 'password.show'|t }}" data-label-hide="{{ 'password.hide'|t }}">
+        {{ ui_icon('eye', 'password-field__icon password-field__icon--show') }}{{ ui_icon('eye-off', 'password-field__icon password-field__icon--hide') }}
+      </button>
+    </div>
+    {% endif %}
+    {% if o.rules %}{{ h.password_rules(name) }}{% endif %}
+  {% endset %}
+  {{ h.field(name, label, control, errors, o.help, o.required) }}
+{% endmacro %}
+
+{# Live check of the length; the server checks everything again (PasswordPolicy), including guessable words. #}
+{% macro password_rules(name) %}
+  {% set min = constant('Bioly\\Support\\PasswordPolicy::MIN_LENGTH') %}
+  <ul class="password-rules" id="f-{{ name }}-rules" data-password-rules="f-{{ name }}" data-min="{{ min }}" data-max="{{ constant('Bioly\\Support\\PasswordPolicy::MAX_LENGTH') }}">
+    <li class="password-rules__item" data-rule="length">
+      {{ ui_icon('circle', 'password-rules__icon password-rules__icon--open') }}{{ ui_icon('check', 'password-rules__icon password-rules__icon--met') }}
+      <span>{{ 'password.rule.length'|t({n: min}) }}</span><span class="visually-hidden" data-rule-state></span>
+    </li>
+  </ul>
+  <p class="field__help">{{ 'password.rule.guessable'|t }}</p>
+{% endmacro %}
+
+{% macro select(name, label, value, choices, errors, help) %}
+  {% import _self as h %}
+  {% set control %}
+    <select class="input" id="f-{{ name }}" name="{{ name }}">
+      {% for key, text in choices %}
+        <option value="{{ key }}"{% if key == value %} selected{% endif %}>{{ text }}</option>
+      {% endfor %}
+    </select>
+  {% endset %}
+  {{ h.field(name, label, control, errors, help, false) }}
+{% endmacro %}
+
+{% macro csrf() %}
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+{% endmacro %}
+
+{% macro flashes() %}
+  {% for flash in flashes() %}
+    <div class="notice notice--{{ flash.type }}" role="status">{{ flash.message }}</div>
+  {% endfor %}
+{% endmacro %}
+
+{# Field names start with "smtp_", so they never clash with the account fields on the same page. #}
+{% macro smtp_fields(smtp, errors, old) %}
+  {% import _self as h %}
+  {% set o = old|default({}) %}
+  <div class="grid">
+    {{ h.input('smtp_host', 'smtp.host'|t, o.smtp_host ?? smtp.host, errors, {required: true}) }}
+    {{ h.input('smtp_port', 'smtp.port'|t, o.smtp_port ?? smtp.port, errors, {required: true, inputmode: 'numeric'}) }}
+    {{ h.select('smtp_encryption', 'smtp.encryption'|t, o.smtp_encryption ?? smtp.encryption, {starttls: 'smtp.encryption.starttls'|t, ssl: 'smtp.encryption.ssl'|t, none: 'smtp.encryption.none'|t}, errors) }}
+    {{ h.input('smtp_username', 'smtp.username'|t, o.smtp_username ?? smtp.username, errors, {autocomplete: 'off'}) }}
+    {{ h.input('smtp_password', 'smtp.password'|t, '', errors, {type: 'password', autocomplete: 'new-password', help: smtp.has_password ? 'smtp.password.keep'|t : 'smtp.password.help'|t}) }}
+    {{ h.input('smtp_from', 'smtp.from'|t, o.smtp_from ?? smtp.from, errors, {type: 'email', required: true}) }}
+  </div>
+{% endmacro %}

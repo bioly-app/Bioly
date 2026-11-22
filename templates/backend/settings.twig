@@ -1,0 +1,99 @@
+{% extends 'layout/backend.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'settings.title'|t }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1 class="page-header__title">{{ 'settings.title'|t }}</h1>
+    <p class="muted">{{ 'settings.intro'|t }}</p>
+  </div>
+</header>
+
+<section class="panel" aria-labelledby="s-account">
+  <div class="panel__head">
+    <h2 class="panel__title" id="s-account">{{ 'settings.account'|t }}</h2>
+    {% if user.email_verified_at %}<span class="badge badge--ok">{{ 'settings.verified'|t }}</span>{% elseif user.email %}<span class="badge badge--warn">{{ 'settings.not_verified'|t }}</span>{% endif %}
+  </div>
+  <form method="post" action="/admin/settings/account" class="stack">
+    {{ m.csrf() }}
+    <div class="grid">
+      {{ m.input('username', 'auth.username'|t, old.username ?? user.username, errors, {required: true, autocomplete: 'username'}) }}
+      {{ m.input('email', 'smtp.email'|t, old.email ?? user.email, errors, {type: 'email', autocomplete: 'email', help: 'settings.email.help'|t}) }}
+    </div>
+    <div><button class="button button--primary" type="submit">{{ 'common.save'|t }}</button></div>
+  </form>
+</section>
+
+<section class="panel" aria-labelledby="s-password">
+  <div class="panel__head"><h2 class="panel__title" id="s-password">{{ 'settings.password.title'|t }}</h2></div>
+  <form method="post" action="/admin/settings/password" class="stack">
+    {{ m.csrf() }}
+    <div class="grid">
+      {{ m.input('current', 'settings.password.current'|t, '', errors, {type: 'password', required: true, autocomplete: 'current-password'}) }}
+      {{ m.input('password', 'settings.password.new'|t, '', errors, {type: 'password', required: true, autocomplete: 'new-password', rules: true}) }}
+      {{ m.input('password_repeat', 'settings.password.repeat'|t, '', {}, {type: 'password', required: true, autocomplete: 'new-password'}) }}
+    </div>
+    <p class="muted small">{{ 'settings.password.note'|t }}</p>
+    <div><button class="button button--primary" type="submit">{{ 'settings.password.change'|t }}</button></div>
+  </form>
+</section>
+
+<section class="panel" aria-labelledby="s-general">
+  <div class="panel__head"><h2 class="panel__title" id="s-general">{{ 'settings.general'|t }}</h2></div>
+  {% if errors.general is defined %}<div class="notice notice--error" role="alert">{{ errors.general|t }}</div>{% endif %}
+  <form method="post" action="/admin/settings/general" class="stack">
+    {{ m.csrf() }}
+    {% set locale_choices = {} %}
+    {% for l in locales %}{% set locale_choices = locale_choices|merge({(l): ('locale.' ~ l)|t}) %}{% endfor %}
+    {% set tz_choices = {} %}
+    {% for tz in timezones %}{% set tz_choices = tz_choices|merge({(tz): tz}) %}{% endfor %}
+    <div class="grid">
+      {{ m.select('backend_locale', 'settings.backend_locale'|t, user.locale, locale_choices, errors) }}
+      {{ m.select('site_locale', 'settings.site_locale'|t, site_locale, locale_choices, errors, 'settings.site_locale.help'|t) }}
+      {{ m.select('timezone', 'settings.timezone'|t, timezone, tz_choices, errors) }}
+    </div>
+    {{ m.input('site_url', 'settings.site_url'|t, old.site_url ?? site_url, errors, {type: 'url', required: true, inputmode: 'url', help: 'settings.site_url.help'|t}) }}
+    {% if request_url and request_url != site_url %}
+      <p class="notice notice--info">{{ 'settings.site_url.moved'|t({url: request_url}) }}</p>
+    {% endif %}
+    <div><button class="button button--primary" type="submit">{{ 'common.save'|t }}</button></div>
+  </form>
+</section>
+
+<section class="panel" id="smtp" aria-labelledby="s-smtp">
+  <div class="panel__head">
+    <div>
+      <h2 class="panel__title" id="s-smtp">{{ 'smtp.title'|t }}</h2>
+      <p class="muted small">{{ 'smtp.intro'|t }}</p>
+    </div>
+    <span class="badge badge--{{ smtp_verified ? 'ok' : 'warn' }}">{{ smtp_verified ? 'smtp.status.ok'|t : 'smtp.status.missing'|t }}</span>
+  </div>
+  {% if errors.smtp is defined %}<div class="notice notice--error" role="alert">{{ errors.smtp|t }}</div>{% endif %}
+  <form method="post" action="/admin/settings/smtp" class="stack">
+    {{ m.csrf() }}
+    {{ m.smtp_fields(smtp, errors, old) }}
+    <p class="muted small">{{ 'smtp.note'|t }}</p>
+    <div><button class="button button--primary" type="submit">{{ 'smtp.save_send'|t }}</button></div>
+  </form>
+  {% if code_sent or errors.code is defined %}
+    <form method="post" action="/admin/settings/smtp/verify" class="stack code-box">
+      {{ m.csrf() }}
+      {{ m.input('code', 'smtp.code'|t, '', errors, {required: true, inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 6, help: 'smtp.code.help'|t}) }}
+      <div class="row">
+        <button class="button button--primary" type="submit">{{ 'smtp.verify'|t }}</button>
+        <button class="button button--ghost" type="submit" formaction="/admin/settings/smtp/resend" formnovalidate>{{ 'smtp.resend'|t }}</button>
+      </div>
+    </form>
+  {% endif %}
+</section>
+
+<section class="panel" aria-labelledby="s-about">
+  <div class="panel__head"><h2 class="panel__title" id="s-about">{{ 'about.title'|t }}</h2></div>
+  <dl class="facts">
+    <div class="facts__row"><dt>{{ 'about.version'|t }}</dt><dd>Bioly {{ app.version }}</dd></div>
+    <div class="facts__row"><dt>{{ 'about.license_label'|t }}</dt><dd><a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GPL-3.0-or-later</a></dd></div>
+  </dl>
+  <p>{{ 'about.license'|t }}</p>
+  <p class="muted small">{{ 'about.third_party'|t }} <a href="/admin/credits">{{ 'nav.credits'|t }}</a>.</p>
+</section>
+{% endblock %}

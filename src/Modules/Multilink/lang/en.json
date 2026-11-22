@@ -1,0 +1,13 @@
+{
+  "module.multilink.name": "Multilink",
+  "module.multilink.description": "Opens a popup with more links, blocked in in-app browsers",
+  "module.multilink.title": "Title",
+  "module.multilink.subtitle": "Subtitle",
+  "module.multilink.subtitle.help": "Optional, e.g. “3 links in the collection”.",
+  "module.multilink.icon": "Icon",
+  "module.multilink.children": "Links in the popup",
+  "module.multilink.add_child": "Add link",
+  "module.multilink.age_gate": "Age check from 18",
+  "module.multilink.age_gate.help": "Visitors enter their date of birth before the popup opens; the links only load from 18. The date stays in the browser. It is a self-declaration, not a verified age check.",
+  "module.multilink.age_badge": "18+"
+}

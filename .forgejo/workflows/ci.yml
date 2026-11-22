@@ -1,0 +1,52 @@
+# Checks every push and pull request: code style, static analysis, tests, icons and known
+# security issues in the dependencies (composer audit). The same as "make check" locally.
+#
+# "runs-on" must match a label of your Forgejo runner. "docker" is the default label of a
+# runner that starts jobs in containers.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    name: Checks (PHP ${{ matrix.php }})
+    runs-on: docker
+    strategy:
+      fail-fast: false
+      matrix:
+        # Lowest supported and newest version
+        php: ["8.3", "8.5"]
+    container:
+      image: php:${{ matrix.php }}-cli
+    env:
+      # Jobs run as root inside the container
+      COMPOSER_ALLOW_SUPERUSER: 1
+    steps:
+      - name: Install system packages and PHP extensions
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git unzip nodejs \
+            libpng-dev libjpeg62-turbo-dev libwebp-dev libfreetype6-dev libsqlite3-dev libzip-dev libicu-dev
+          docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
+          docker-php-ext-install -j"$(nproc)" gd pdo_sqlite zip intl
+
+      - name: Check out the code
+        uses: https://code.forgejo.org/actions/checkout@v4
+
+      - name: Install Composer (checksum verified)
+        run: |
+          expected="$(php -r 'echo trim(file_get_contents("https://composer.github.io/installer.sig"));')"
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          actual="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+          [ "$expected" = "$actual" ] || { echo "Composer installer checksum does not match" >&2; exit 1; }
+          php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer
+          rm composer-setup.php
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run all checks
+        run: composer check

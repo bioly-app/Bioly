@@ -1,0 +1,7 @@
+[
+  { "id": "dots", "size": 24 },
+  { "id": "waves", "size": 48 },
+  { "id": "topo", "size": 320 },
+  { "id": "memphis", "size": 160 },
+  { "id": "maze", "size": 96 }
+]

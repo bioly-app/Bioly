@@ -1,0 +1,404 @@
+{
+    "source": "Simple Icons 16.38.0 (https://simpleicons.org), CC0-1.0; originals partly from SVG Logos (https://github.com/gilbarbara/logos), CC0-1.0",
+    "icons": {
+        "applemusic": {
+            "title": "Apple Music",
+            "hex": "FA243C",
+            "folder": "rot",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "applepodcasts": {
+            "title": "Apple Podcasts",
+            "hex": "9933CC",
+            "folder": "lila",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "artstation": {
+            "title": "ArtStation",
+            "hex": "13AFF0",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "bandcamp": {
+            "title": "Bandcamp",
+            "hex": "408294",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "behance": {
+            "title": "Behance",
+            "hex": "1769FF",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "bluesky": {
+            "title": "Bluesky",
+            "hex": "1185FE",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "buymeacoffee": {
+            "title": "Buy Me A Coffee",
+            "hex": "FFDD00",
+            "folder": "gelb",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "calendly": {
+            "title": "Calendly",
+            "hex": "006BFF",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "cashapp": {
+            "title": "Cash App",
+            "hex": "00C244",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "deezer": {
+            "title": "Deezer",
+            "hex": "A238FF",
+            "folder": "lila",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "discord": {
+            "title": "Discord",
+            "hex": "5865F2",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "dribbble": {
+            "title": "Dribbble",
+            "hex": "EA4C89",
+            "folder": "pink",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "ebay": {
+            "title": "eBay",
+            "hex": "E53238",
+            "folder": "rot",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "etsy": {
+            "title": "Etsy",
+            "hex": "F16521",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "facebook": {
+            "title": "Facebook",
+            "hex": "0866FF",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "flickr": {
+            "title": "Flickr",
+            "hex": "0063DC",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "github": {
+            "title": "GitHub",
+            "hex": "181717",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "gitlab": {
+            "title": "GitLab",
+            "hex": "FC6D26",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "gofundme": {
+            "title": "GoFundMe",
+            "hex": "00B964",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "goodreads": {
+            "title": "Goodreads",
+            "hex": "1E1914",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "googlemaps": {
+            "title": "Google Maps",
+            "hex": "4285F4",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "instagram": {
+            "title": "Instagram",
+            "hex": "FF0069",
+            "folder": "pink",
+            "brand_color": true,
+            "original": "simple-icons+gradient"
+        },
+        "kick": {
+            "title": "Kick",
+            "hex": "53FC19",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "kickstarter": {
+            "title": "Kickstarter",
+            "hex": "05CE78",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "kofi": {
+            "title": "Ko-fi",
+            "hex": "FF6433",
+            "folder": "rot",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "komoot": {
+            "title": "Komoot",
+            "hex": "6AA127",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "mastodon": {
+            "title": "Mastodon",
+            "hex": "6364FF",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "medium": {
+            "title": "Medium",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "messenger": {
+            "title": "Messenger",
+            "hex": "0866FF",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "mixcloud": {
+            "title": "Mixcloud",
+            "hex": "5000FF",
+            "folder": "lila",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "onlyfans": {
+            "title": "OnlyFans",
+            "hex": "00AFF0",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "patreon": {
+            "title": "Patreon",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "paypal": {
+            "title": "PayPal",
+            "hex": "002991",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "pinterest": {
+            "title": "Pinterest",
+            "hex": "BD081C",
+            "folder": "rot",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "playstation": {
+            "title": "PlayStation",
+            "hex": "0070D1",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "reddit": {
+            "title": "Reddit",
+            "hex": "FF4500",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "signal": {
+            "title": "Signal",
+            "hex": "3B45FD",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "snapchat": {
+            "title": "Snapchat",
+            "hex": "FFFC00",
+            "folder": "gelb",
+            "brand_color": true,
+            "original": "simple-icons+outline"
+        },
+        "soundcloud": {
+            "title": "SoundCloud",
+            "hex": "FF5500",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "spotify": {
+            "title": "Spotify",
+            "hex": "1ED760",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "stackoverflow": {
+            "title": "Stack Overflow",
+            "hex": "F58025",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "steam": {
+            "title": "Steam",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": true,
+            "original": "simple-icons+gradient"
+        },
+        "strava": {
+            "title": "Strava",
+            "hex": "FC4C02",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "substack": {
+            "title": "Substack",
+            "hex": "FF6719",
+            "folder": "orange",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "telegram": {
+            "title": "Telegram",
+            "hex": "26A5E4",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "threads": {
+            "title": "Threads",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "tidal": {
+            "title": "TIDAL",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "tiktok": {
+            "title": "TikTok",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "tumblr": {
+            "title": "Tumblr",
+            "hex": "36465D",
+            "folder": "blau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "twitch": {
+            "title": "Twitch",
+            "hex": "9146FF",
+            "folder": "lila",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "vimeo": {
+            "title": "Vimeo",
+            "hex": "1AB7EA",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "vinted": {
+            "title": "Vinted",
+            "hex": "007782",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "whatsapp": {
+            "title": "WhatsApp",
+            "hex": "25D366",
+            "folder": "gruen",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "x": {
+            "title": "X",
+            "hex": "000000",
+            "folder": "grau",
+            "brand_color": false,
+            "original": "simple-icons"
+        },
+        "xing": {
+            "title": "Xing",
+            "hex": "006567",
+            "folder": "blau",
+            "brand_color": true,
+            "original": "simple-icons"
+        },
+        "youtube": {
+            "title": "YouTube",
+            "hex": "FF0000",
+            "folder": "rot",
+            "brand_color": true,
+            "original": "svg-logos"
+        },
+        "youtubemusic": {
+            "title": "YouTube Music",
+            "hex": "FF0000",
+            "folder": "rot",
+            "brand_color": true,
+            "original": "simple-icons"
+        }
+    }
+}

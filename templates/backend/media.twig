@@ -1,0 +1,110 @@
+{% extends 'layout/backend.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'media.title'|t }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1 class="page-header__title">{{ 'media.title'|t }}</h1>
+    <p class="muted">{{ 'media.intro'|t }}</p>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="{{ 'media.title'|t }}">
+  <a class="tabs__tab" href="/admin/media"{% if tab == 'images' %} aria-current="page"{% endif %}>{{ 'media.tab.images'|t }}</a>
+  <a class="tabs__tab" href="/admin/media?tab=icons"{% if tab == 'icons' %} aria-current="page"{% endif %}>{{ 'media.tab.icons'|t }}</a>
+</nav>
+
+<section class="panel" aria-labelledby="m-upload">
+  <div class="panel__head">
+    <div>
+      <h2 class="panel__title" id="m-upload">{{ (tab == 'icons' ? 'media.upload.icons' : 'media.upload.images')|t }}</h2>
+      <p class="muted small">{{ tab == 'icons' ? 'media.upload.icons.help'|t : 'media.upload.images.help'|t({mb: max_mb}) }}</p>
+    </div>
+  </div>
+  <form method="post" action="/admin/media/upload" enctype="multipart/form-data" class="media-upload">
+    {{ m.csrf() }}
+    <input type="hidden" name="tab" value="{{ tab }}">
+    <div class="field media-upload__file">
+      <label class="field__label" for="m-files">{{ 'media.upload.files'|t }}</label>
+      <input class="input input--file" id="m-files" type="file" name="files[]" multiple required
+        accept="{{ tab == 'icons' ? '.svg,image/svg+xml' : 'image/jpeg,image/png,image/webp' }}">
+    </div>
+    {% if tab == 'icons' %}
+      <div class="field">
+        <label class="field__label" for="m-color">{{ 'media.icon.color'|t }}</label>
+        <select class="input" id="m-color" name="color" aria-describedby="m-color-help">
+          <option value="">{{ 'media.icon.original'|t }}</option>
+          {% for name, hex in palette %}<option value="{{ name }}">{{ ('color.' ~ name)|t }}</option>{% endfor %}
+        </select>
+      </div>
+    {% endif %}
+    <div><button class="button button--primary" type="submit">{{ ui_icon('upload') }}{{ 'media.upload.button'|t }}</button></div>
+  </form>
+  {% if tab == 'icons' %}<p class="field__help" id="m-color-help">{{ 'media.icon.color.help'|t }}</p>{% endif %}
+</section>
+
+{% if media_items is empty %}
+  <p class="empty">{{ (tab == 'icons' ? 'media.empty.icons' : 'media.empty.images')|t }}</p>
+{% else %}
+  <ul class="media-grid{% if tab == 'icons' %} media-grid--icons{% endif %}" data-media-palette="{{ palette|json_encode }}">
+    {% for item in media_items %}
+      <li class="media-card" id="m{{ item.id }}">
+        {% if tab == 'icons' %}
+          <div class="media-card__icon" data-media-preview data-color="{{ item.color }}">{{ item.svg|raw }}</div>
+        {% else %}
+          <img class="media-card__image{% if item.has_alpha %} is-transparent{% endif %}" src="{{ item.url }}" alt="" width="{{ item.width }}" height="{{ item.height }}" loading="lazy">
+        {% endif %}
+        <form method="post" action="/admin/media/{{ item.id }}/save" class="stack stack--tight media-card__form">
+          {{ m.csrf() }}
+          <div class="field">
+            <label class="field__label" for="m{{ item.id }}-label">{{ 'media.label'|t }}</label>
+            <input class="input" id="m{{ item.id }}-label" name="label" value="{{ item.label }}" maxlength="60" aria-describedby="m{{ item.id }}-label-help">
+            <p class="field__help" id="m{{ item.id }}-label-help">{{ 'media.label.help'|t }}</p>
+          </div>
+          {% if tab == 'icons' %}
+            <div class="field">
+              <label class="field__label" for="m{{ item.id }}-color">{{ 'media.icon.color'|t }}</label>
+              <select class="input" id="m{{ item.id }}-color" name="color" data-media-color>
+                <option value="">{{ 'media.icon.original'|t }}</option>
+                {% for name, hex in palette %}<option value="{{ name }}"{% if item.color == name %} selected{% endif %}>{{ ('color.' ~ name)|t }}</option>{% endfor %}
+              </select>
+            </div>
+          {% else %}
+            <div class="field">
+              <label class="field__label" for="m{{ item.id }}-alt">{{ 'media.alt'|t }}</label>
+              <textarea class="input" id="m{{ item.id }}-alt" name="alt_text" rows="2" maxlength="250" aria-describedby="m{{ item.id }}-alt-help">{{ item.alt_text }}</textarea>
+              <p class="field__help" id="m{{ item.id }}-alt-help">{{ 'media.alt.help'|t }}</p>
+            </div>
+          {% endif %}
+          <p class="media-card__meta small muted">
+            {% if item.width %}{{ item.width }} × {{ item.height }} px · {% endif %}{{ (item.size / 1024)|round(0, 'ceil') }} KB
+          </p>
+          {% if item.uses %}
+            <p class="media-card__uses small">{{ 'media.used'|t }}: {{ item.uses|join(', ') }}</p>
+          {% elseif tab == 'images' and not item.alt_text %}
+            <p class="media-card__uses media-card__uses--warn small">{{ 'media.alt.missing'|t }}</p>
+          {% endif %}
+          <div class="row row--between">
+            <button class="button button--primary" type="submit">{{ 'common.save'|t }}</button>
+          </div>
+        </form>
+        {% if item.uses %}
+          <p class="small muted media-card__locked">{{ 'media.delete.locked'|t }}</p>
+        {% else %}
+          <details class="media-card__delete">
+            <summary class="button button--ghost">{{ ui_icon('trash-2') }}{{ 'common.delete'|t }}</summary>
+            <form method="post" action="/admin/media/{{ item.id }}/delete" class="media-card__confirm">
+              {{ m.csrf() }}
+              <p class="small">{{ 'media.delete.confirm'|t }}</p>
+              <button class="button button--danger" type="submit">{{ 'media.delete.yes'|t }}</button>
+            </form>
+          </details>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{{ asset('/assets/js/media.js') }}"></script>
+{% endblock %}

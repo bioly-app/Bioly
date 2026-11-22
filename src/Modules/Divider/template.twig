@@ -1,0 +1,8 @@
+{% if title %}
+<div class="divider">
+  <h2 class="divider__title">{{ title }}</h2>
+  <span class="divider__line" aria-hidden="true"></span>
+</div>
+{% else %}
+<hr class="divider divider--plain">
+{% endif %}

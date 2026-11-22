@@ -1,0 +1,15 @@
+{% extends 'frontend/base.twig' %}
+{% set key = status == 404 ? '404' : '500' %}
+
+{% block title %}{{ ('error.' ~ key ~ '.title')|t }}{% endblock %}
+{% block meta %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+  <main class="legal legal--card legal--center">
+    <p class="legal__code">{{ status }}</p>
+    <h1 class="legal__title">{{ ('error.' ~ key ~ '.title')|t }}</h1>
+    <p>{{ ('error.' ~ key ~ '.text')|t }}</p>
+    <p><a class="legal__back" href="/">{{ 'site.back_home'|t }}</a></p>
+    {% if details %}<pre class="legal__details">{{ details }}</pre>{% endif %}
+  </main>
+{% endblock %}

@@ -1,0 +1,6 @@
+{# Returned by /api/multilink/{id}, inserted into the dialog by multilink.js #}
+<ul class="sheet__list">
+  {%- for item in items %}
+  <li>{% include '@module_link/template.twig' with item only %}</li>
+  {%- endfor %}
+</ul>

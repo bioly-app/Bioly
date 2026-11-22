@@ -1,0 +1,50 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ~/.bioly:/root/.bioly
+    environment:
+      APP_ENV: dev
+      SEED_ADMIN_USER: admin
+      SEED_ADMIN_PASSWORD: Bioly-Demo-2026
+      SEED_ADMIN_EMAIL: admin@bioly.test
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+    depends_on:
+      - mailpit
+
+  # Catches all outgoing mail. Web UI: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+
+  # Oldest supported PHP version, used by the CI tests
+  compat:
+    build:
+      context: .
+      args:
+        PHP_VERSION: "8.3"
+    profiles: ["compat"]
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: test
+
+  # A separate test site for zips: http://localhost:8081. It never sees your code folder,
+  # only what a zip brings, so it behaves like a real installation. make testsite
+  testsite:
+    build: .
+    ports:
+      - "8081:80"
+    volumes:
+      - testsite:/var/www/html
+      - ./dist:/dist:ro
+      - ./docker/install-zip.sh:/usr/local/bin/bioly-install-zip:ro
+    profiles: ["testsite"]
+
+volumes:
+  testsite:

@@ -1,0 +1,78 @@
+{% import 'partials/macros.twig' as m %}
+<!doctype html>
+<html lang="{{ user.locale }}" data-busy-text="{{ 'common.busy'|t }}" data-rule-met="{{ 'password.rule.met'|t }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Bioly{% endblock %} · Bioly</title>
+  {% include 'layout/backend-styles.twig' %}
+  <link rel="icon" href="/favicon.svg?v={{ favicon_version }}" type="image/svg+xml">
+</head>
+<body class="admin">
+  <nav class="nav" aria-label="{{ 'nav.main'|t }}">
+    <p class="brand">{{ include('partials/logo.twig') }}<span class="brand__name">Bioly</span></p>
+    <ul class="nav__list">
+      {% set items = [
+        {url: '/admin', label: 'nav.page'|t, icon: 'house', prefix: null},
+        {url: '/admin/general', label: 'nav.general'|t, icon: 'palette', prefix: null},
+        {url: '/admin/media', label: 'nav.media'|t, icon: 'image', prefix: null},
+        {url: '/admin/legal/imprint', label: 'nav.legal'|t, icon: 'scale', prefix: '/admin/legal/'},
+        {url: '/admin/settings', label: 'nav.settings'|t, icon: 'settings', prefix: null}
+      ] %}
+      {% for item in items %}
+        {% set active = current_path == item.url or (item.prefix and current_path starts with item.prefix) %}
+        <li><a class="nav__link" href="{{ item.url }}"{% if active %} aria-current="page"{% endif %}>
+          {{ ui_icon(item.icon, 'nav__icon') }}{{ item.label }}</a></li>
+      {% endfor %}
+      <li><a class="nav__link" href="/" target="_blank" rel="noopener">
+        {{ ui_icon('external-link', 'nav__icon') }}{{ 'nav.view_site'|t }}</a></li>
+      {% if app.feedback_url %}
+      <li><a class="nav__link" href="{{ app.feedback_url }}" target="_blank" rel="noopener">
+        {{ ui_icon('message-square-heart', 'nav__icon') }}{{ 'nav.feedback'|t }}</a></li>
+      {% endif %}
+    </ul>
+    <div class="nav__footer">
+      <div class="nav__account">
+        <div class="nav__who">
+          <span class="nav__avatar" aria-hidden="true">
+            {%- if avatar_url %}<img class="nav__avatar-image" src="{{ avatar_url }}" alt="" width="40" height="40">{% else %}{{ user.username|first|upper }}{% endif -%}
+          </span>
+          <span class="nav__user">
+            <span class="nav__name">{{ user.username }}</span>
+            <small class="nav__version">Bioly {{ app.version }}</small>
+          </span>
+        </div>
+        {# Its own row with text, so it is never mistaken for "View page" above. #}
+        <form method="post" action="/admin/logout" data-no-busy>{{ m.csrf() }}
+          <button class="nav__logout" type="submit">{{ ui_icon('log-out', 'nav__logout-icon') }}{{ 'nav.logout'|t }}</button>
+        </form>
+      </div>
+      <a class="nav__credits" href="/admin/credits"{% if current_path == '/admin/credits' %} aria-current="page"{% endif %}>{{ 'nav.credits'|t }}</a>
+    </div>
+  </nav>
+  <main class="main" id="main">
+    {% if smtp_hint %}
+      <div class="notice notice--warn notice--hint" role="status">
+        <p>{{ 'hint.smtp'|t }} <a href="/admin/settings#smtp">{{ 'hint.smtp.action'|t }}</a></p>
+        <form method="post" action="/admin/hint/dismiss">
+          {{ m.csrf() }}<input type="hidden" name="back" value="{{ current_path }}">
+          <button class="icon-button" type="submit" aria-label="{{ 'hint.dismiss'|t }}">{{ ui_icon('x') }}</button>
+        </form>
+      </div>
+    {% endif %}
+    <div class="notice notice--warn notice--hint" role="status" hidden data-session data-idle="{{ session_info.idle }}" data-ends-at="{{ session_info.ends_at }}"
+      data-text-idle="{{ 'session.idle_warning'|t }}" data-text-ends="{{ 'session.end_warning'|t }}">
+      <p data-session-text></p>
+      <button class="button button--ghost" type="button" data-session-stay>{{ 'session.stay'|t }}</button>
+    </div>
+    {{ m.flashes() }}
+    {% block content %}{% endblock %}
+  </main>
+  {% block aside %}{% endblock %}
+  <script type="module" src="{{ asset('/assets/js/forms.js') }}"></script>
+  <script type="module" src="{{ asset('/assets/js/backend/session.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

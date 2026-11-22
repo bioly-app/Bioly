@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="{{ locale ?? current_locale() }}" data-busy-text="{{ 'common.busy'|t }}" data-rule-met="{{ 'password.rule.met'|t }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Bioly{% endblock %}</title>
+  {% include 'layout/backend-styles.twig' %}
+</head>
+<body class="plain">
+  <div class="plain__inner">
+    <p class="brand">{{ include('partials/logo.twig') }}<span class="brand__name">Bioly</span></p>
+    {% block content %}{% endblock %}
+  </div>
+  <script type="module" src="{{ asset('/assets/js/forms.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

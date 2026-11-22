@@ -1,0 +1,1257 @@
+/*
+ * Bioly link page. Colors and radius come from /theme.css as custom properties: the values
+ * below are only fallbacks. Sizes, speeds and fixed colors are defined once in :root, too.
+ * One file on purpose: it is the public page, and every extra request delays the first paint.
+ */
+
+:root {
+  --color-bg: #0e0f11;
+  --content-width: 880px;
+  --gap: clamp(10px, 2.5vw, 14px);
+  --color-surface: #18191d;
+  --color-border: #2a2c31;
+  --color-text: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-accent: #0b63b8; /* Theme::BRAND; the page CSS from Theme.php overrides all of these */
+  --color-on-accent: #fff;
+  --color-accent-text: color-mix(in srgb, var(--color-accent) 55%, #fff);
+  --color-heading: var(--color-accent-text);
+  --color-header: var(--color-accent);
+  --color-on-header: #fff;
+  --color-on-bg: #fff;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 14px rgb(0 0 0 / 0.25);
+  --radius: 20px;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Space Grotesk", var(--font);
+  --icon-color: var(--color-accent-text);
+
+  /* Not part of the theme */
+  --color-error: #dc2626;
+  --backdrop: rgb(0 0 0 / 0.6);
+  --toast: rgb(0 0 0 / 0.82);
+  --on-toast: #fff;
+  --radius-large: calc(var(--radius) + 8px);
+  --page-gutter: clamp(12px, 4vw, 32px);
+  --control: 44px;
+  --focus-ring: 3px solid var(--color-accent-text);
+  --duration: 0.15s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.site {
+  position: relative;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font);
+  line-height: 1.5;
+}
+
+.site :focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* :where() keeps this at the lowest weight, so every component can set its own link color. */
+:where(.site) a {
+  color: inherit;
+}
+
+/* Background layers behind everything: a pattern (color, strength and mask from theme.css)
+   or a photo that covers the window and stays put while the page scrolls. */
+.site__pattern,
+.site__image {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.site__pattern {
+  mask-repeat: repeat;
+}
+
+.site__image {
+  background-position: center;
+  background-size: cover;
+}
+
+.site__inner {
+  position: relative;
+  /* One column width for header, tiles, dividers and footer, so every edge lines up */
+  max-width: calc(var(--content-width) + 2 * var(--page-gutter));
+  margin: 0 auto;
+  padding: clamp(12px, 4vw, 48px) var(--page-gutter) 24px;
+}
+
+.site__main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  margin-top: clamp(16px, 4vw, 32px);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Header */
+
+.site-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(24px, 6vw, 40px) clamp(16px, 4vw, 24px);
+  border-radius: var(--radius-large);
+  background: var(--color-header);
+  color: var(--color-on-header);
+  text-align: center;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.site-header__pattern {
+  position: absolute;
+  inset: 0;
+  mask-repeat: repeat;
+}
+
+.site-header > :not(.site-header__pattern) {
+  position: relative;
+}
+
+.site-header__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(88px, 22vw, 112px);
+  height: clamp(88px, 22vw, 112px);
+  border: 4px solid color-mix(in srgb, var(--color-on-header) 40%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-on-header) 16%, transparent);
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.site-header__avatar--image {
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.site-header__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.site-header__avatar--clear {
+  background: none;
+}
+
+.site-header__avatar--clear .site-header__image {
+  object-fit: contain;
+}
+
+.site-header__name {
+  max-width: 100%;
+  margin: clamp(14px, 4vw, 20px) 0 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.site-header__bio {
+  max-width: 48ch;
+  margin: 10px 0 0;
+  font-size: 1rem;
+}
+
+.quicklinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quicklinks__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control);
+  height: var(--control);
+  border-radius: 50%;
+  /* Same icon style as the tiles (Design > icon style), on the card surface so every color stays readable */
+  background: var(--color-surface);
+  color: var(--icon-color);
+  transition: transform var(--duration);
+}
+
+/* Two classes: must win over the color class .icon--<name> from theme.css, like the tiles */
+.quicklinks__link.quicklinks__link--accent {
+  --icon-color: var(--color-accent-text);
+}
+
+.quicklinks__link.quicklinks__link--mono,
+.quicklinks__link.quicklinks__link--original {
+  --icon-color: var(--color-text);
+}
+
+.quicklinks__link:hover {
+  transform: translateY(-2px);
+}
+
+.quicklinks__link .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Tiles: links and multilinks */
+
+.tiles {
+  display: grid;
+  /* minmax(0, 1fr): long texts shrink with an ellipsis instead of widening the column */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tiles__item {
+  display: flex;
+  min-width: 0;
+}
+
+.tile {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  min-width: 0;
+  min-height: 72px;
+  padding: clamp(12px, 3vw, 16px) clamp(14px, 3vw, 18px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--duration), box-shadow var(--duration), border-color var(--duration);
+}
+
+.tile:hover,
+.tile:focus-visible {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-accent) 28%, transparent);
+  transform: translateY(-2px);
+}
+
+.tile:active {
+  background-image: linear-gradient(color-mix(in srgb, var(--color-accent) 12%, transparent), color-mix(in srgb, var(--color-accent) 12%, transparent));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent) 30%, transparent);
+  transform: scale(0.98);
+}
+
+.tile__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: clamp(40px, 10vw, 46px);
+  height: clamp(40px, 10vw, 46px);
+  border-radius: 14px;
+  color: var(--icon-color);
+  background: color-mix(in srgb, var(--icon-color) 16%, transparent);
+}
+
+.tile__icon.icon--none {
+  --icon-color: var(--color-accent-text);
+}
+
+.tile--icon-accent .tile__icon {
+  --icon-color: var(--color-accent-text);
+}
+
+.tile--icon-mono .tile__icon {
+  --icon-color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.tile--icon-original .tile__icon {
+  /* Logos in their brand color keep it; black or white logos use the text color */
+  --icon-color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+
+.tile__icon .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.tile__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tile__title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.tile__subtitle {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Line icons drawn by the page itself (arrows, close, slider buttons) share one stroke style */
+:where(.tile__arrow, .slider__button svg, .slider__pause svg, .sheet__close svg) {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tile__arrow {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-muted);
+}
+
+.icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Countdown: a card like the tiles, in the colors of the design */
+
+.countdown {
+  --countdown-tint: color-mix(in srgb, var(--color-accent-text) 16%, transparent);
+  --countdown-cell: color-mix(in srgb, var(--color-text) 5%, transparent);
+  --countdown-grey: color-mix(in srgb, var(--color-text) 8%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(14px, 3vw, 18px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: transform var(--duration), box-shadow var(--duration), border-color var(--duration);
+}
+
+.countdown--compact {
+  justify-content: center;
+  min-height: 64px;
+  padding-block: 10px;
+}
+
+/* The link arrow sits in the top right corner, the text keeps clear of it */
+.countdown--link {
+  position: relative;
+}
+
+.countdown--link .countdown__head {
+  padding-right: 22px;
+}
+
+.countdown[hidden],
+.countdown [hidden] {
+  display: none;
+}
+
+.countdown--link:hover,
+.countdown--link:focus-visible {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-accent) 28%, transparent);
+  transform: translateY(-2px);
+}
+
+.countdown__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.countdown__date {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 62px;
+  border-radius: 14px;
+  background: var(--countdown-tint);
+}
+
+.countdown--compact .countdown__date {
+  width: 42px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.countdown__month {
+  color: var(--color-accent-text);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.countdown__day {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.countdown--compact .countdown__month {
+  font-size: 0.625rem;
+}
+
+.countdown--compact .countdown__day {
+  font-size: 1.0625rem;
+}
+
+.countdown__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.countdown__eyebrow {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.countdown__title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.countdown--compact .countdown__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Details too long for one line: countdown.js measures them and lets them run slowly from
+   right to left in a loop. Without JS, or with reduced motion, the line ends in "…". */
+.countdown__meta-text {
+  display: inline;
+}
+
+.countdown__meta.is-scrolling {
+  text-overflow: clip;
+}
+
+.countdown__meta.is-scrolling .countdown__meta-text {
+  display: inline-block;
+  padding-right: 2.5em;
+  animation: countdown-scroll var(--scroll-time, 8s) linear infinite;
+}
+
+@keyframes countdown-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-1 * var(--scroll-distance, 0px))); }
+}
+
+.countdown--compact .countdown__title {
+  font-size: 1rem;
+}
+
+.countdown__meta {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.countdown--compact .countdown__meta {
+  font-size: 0.8125rem;
+}
+
+.countdown__place {
+  white-space: nowrap;
+}
+
+.countdown__pin {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+
+.countdown__arrow {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-muted);
+}
+
+.countdown__timer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  background: var(--countdown-cell);
+}
+
+.countdown__num {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown__label {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
+.countdown__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58px;
+  border-radius: 14px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.countdown__status--live {
+  background: var(--countdown-tint);
+  color: var(--color-accent-text);
+}
+
+.countdown__status--over {
+  background: var(--countdown-cell);
+  color: var(--color-muted);
+}
+
+.countdown__pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--countdown-tint);
+  color: var(--color-accent-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.countdown__pill--over {
+  background: var(--countdown-grey);
+  color: var(--color-muted);
+}
+
+/* After the event the calendar sheet turns grey as well */
+.countdown:has(.countdown__pill--over:not([hidden]), .countdown__status--over:not([hidden])) .countdown__date {
+  background: var(--countdown-grey);
+}
+
+.countdown:has(.countdown__pill--over:not([hidden]), .countdown__status--over:not([hidden])) .countdown__month {
+  color: var(--color-muted);
+}
+
+.countdown__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: countdown-pulse 1.8s infinite;
+}
+
+@keyframes countdown-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 60%, transparent); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .countdown__dot,
+  .countdown__meta.is-scrolling .countdown__meta-text {
+    animation: none;
+  }
+
+  .countdown__meta.is-scrolling {
+    text-overflow: ellipsis;
+  }
+
+  .countdown__meta [data-copy] {
+    display: none;
+  }
+
+  .countdown--link:hover,
+  .countdown--link:focus-visible {
+    transform: none;
+  }
+}
+
+/* Divider */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.divider__title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.divider__line {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-heading);
+}
+
+.divider--plain {
+  width: 100%;
+  height: 2px;
+  margin: 8px 0 0;
+  border: 0;
+  border-radius: 1px;
+  background: var(--color-heading);
+}
+
+/* Image module: one image or a slider */
+
+.media-block {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  aspect-ratio: 4 / 3;
+}
+
+.media-block--1-1 {
+  aspect-ratio: 1;
+}
+
+.media-block--16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+/* Wide screens: square images would be very tall, so they keep a sensible height */
+@media (min-width: 640px) {
+  .media-block--1-1 {
+    width: min(100%, 520px);
+    margin-inline: auto;
+  }
+}
+
+.media-block__link,
+.media-block__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.media-block__image {
+  object-fit: cover;
+}
+
+/* Transparent images (logos): the page background shows through, nothing is cropped */
+.media-block--clear {
+  background: none;
+  box-shadow: none;
+}
+
+.media-block__image--contain {
+  object-fit: contain;
+}
+
+.media-block__link:focus-visible {
+  outline-offset: -4px;
+}
+
+.slider {
+  display: grid;
+  grid-template-areas: "frame" "bar";
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+/* Square slides stay a sensible height on wide screens, like a single square image */
+@media (min-width: 640px) {
+  .slider--1-1 {
+    width: min(100%, 640px);
+    margin-inline: auto;
+  }
+
+  .slider--1-1 .slider__frame {
+    width: 100%;
+  }
+}
+
+.slider__frame {
+  grid-area: frame;
+}
+
+.slider__track {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.slider__track::-webkit-scrollbar {
+  display: none;
+}
+
+.slider__track:focus-visible {
+  outline-offset: -4px;
+}
+
+.slider__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* Controls sit below the image on phones (arrows left and right of the dots)
+   and beside it from tablet width on, so they never cover the picture. */
+.slider__bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.slider__nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slider__button,
+.slider__pause {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--control);
+  height: var(--control);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform var(--duration), border-color var(--duration);
+}
+
+.slider__pause {
+  width: 36px;
+  height: 36px;
+}
+
+.slider__button:hover,
+.slider__pause:hover {
+  border-color: var(--color-accent-text);
+  transform: scale(1.06);
+}
+
+.slider__button:disabled {
+  opacity: 0.35;
+  box-shadow: none;
+  cursor: default;
+  transform: none;
+}
+
+.slider__button svg,
+.slider__pause svg {
+  width: 22px;
+  height: 22px;
+}
+
+.slider__pause svg {
+  width: 16px;
+  height: 16px;
+}
+
+.slider__dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* 24px target, small visible dot in the color of the background text */
+.slider__dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.slider__dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-on-bg) 35%, transparent);
+  transition: width 0.2s;
+}
+
+.slider__dot[aria-current="true"]::before {
+  width: 20px;
+  border-radius: 4px;
+  background: var(--color-on-bg);
+}
+
+@media (min-width: 640px) {
+  .slider {
+    grid-template-areas: "prev frame next" ". bar .";
+    grid-template-columns: var(--control) minmax(0, 1fr) var(--control);
+    column-gap: 14px;
+  }
+
+  .slider__bar {
+    display: contents;
+  }
+
+  .slider__button {
+    align-self: center;
+  }
+
+  .slider__button--prev {
+    grid-area: prev;
+  }
+
+  .slider__button--next {
+    grid-area: next;
+  }
+
+  .slider__nav {
+    grid-area: bar;
+    justify-self: center;
+  }
+}
+
+/* Sheet: dialog for multilinks and hints */
+
+.sheet {
+  width: min(440px, calc(100% - 32px));
+  max-height: calc(100% - 64px);
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font);
+}
+
+.sheet::backdrop {
+  background: var(--backdrop);
+}
+
+.sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sheet__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+}
+
+.sheet__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control);
+  height: var(--control);
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.sheet__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sheet__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheet__list .tile {
+  min-height: 64px;
+  box-shadow: none;
+}
+
+.sheet__text {
+  margin: 0 0 16px;
+  color: var(--color-muted);
+}
+
+.sheet__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.12s, filter 0.12s, box-shadow 0.12s;
+}
+
+.sheet__button:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+/* Visible press feedback, also on touch screens */
+.sheet__button:active {
+  filter: brightness(0.92);
+  box-shadow: none;
+  transform: scale(0.97);
+}
+
+.sheet__note {
+  margin: 16px 0 0;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+/* Age check before a multilink opens */
+
+.age {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.age .sheet__text,
+.age .sheet__note {
+  margin: 0;
+}
+
+.age__group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.age__legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.age__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.6fr;
+  gap: 10px;
+}
+
+.age__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.age__label {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+.age__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius) / 2);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 1.125rem;
+  text-align: center;
+}
+
+.age__input:focus-visible {
+  outline-offset: 1px;
+}
+
+.age__input[aria-invalid="true"] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 1px var(--color-error);
+}
+
+.age__error {
+  margin: 0;
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.age__submit {
+  width: 100%;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Backend preview: note instead of opening a link */
+
+.preview-toast {
+  position: fixed;
+  z-index: 10;
+  bottom: 16px;
+  left: 50%;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--toast);
+  color: var(--on-toast);
+  font-size: 0.8125rem;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.preview-toast[hidden] {
+  display: none;
+}
+
+/* Footer, legal pages, errors */
+
+.site-footer {
+  margin-top: 48px;
+  text-align: center;
+}
+
+.site-footer__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-on-bg);
+  font-size: 0.875rem;
+}
+
+.site-footer__link {
+  padding: 12px 4px;
+  color: var(--color-on-bg);
+  text-decoration: none;
+}
+
+.site-footer__link:hover {
+  text-decoration: underline;
+}
+
+.site-note {
+  color: var(--color-on-bg);
+  font-size: 0.875rem;
+}
+
+.legal--card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+}
+
+.legal--center {
+  text-align: center;
+}
+
+/* Imprint and privacy: a full page of their own, not a card. Headings, list points
+   and lines in the main color (the variant that reads well on the card color). */
+.site--legal {
+  --color-on-bg: var(--color-text);
+  background: var(--color-surface);
+}
+
+.site--legal .site__inner {
+  max-width: calc(760px + 2 * var(--page-gutter));
+}
+
+.legal__back {
+  color: var(--color-accent-text);
+  font-weight: 600;
+}
+
+.legal__title {
+  margin: 16px 0;
+  font-family: var(--font-display);
+  line-height: 1.2;
+}
+
+.site--legal .legal__title {
+  margin: clamp(20px, 5vw, 40px) 0 clamp(16px, 4vw, 28px);
+  color: var(--color-accent-text);
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  letter-spacing: -0.02em;
+}
+
+.legal__code {
+  margin: 0;
+  color: var(--color-heading);
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.legal__details {
+  overflow: auto;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.legal__content {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.legal__content h2,
+.legal__content h3 {
+  color: var(--color-accent-text);
+  font-family: var(--font-display);
+  line-height: 1.2;
+}
+
+.legal__content h2 {
+  margin: 2em 0 0.5em;
+  font-size: 1.5rem;
+}
+
+.legal__content h3 {
+  margin: 1.5em 0 0.4em;
+  font-size: 1.1875rem;
+}
+
+.legal__content li::marker,
+.legal__content a {
+  color: var(--color-accent-text);
+}
+
+.legal__content hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 2px solid var(--color-accent-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site *,
+  .site *::before,
+  .site *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

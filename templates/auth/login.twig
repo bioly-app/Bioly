@@ -1,0 +1,31 @@
+{% extends 'layout/plain.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'auth.login.title'|t }} · Bioly{% endblock %}
+{% set locked = (lock_seconds ?? 0) > 0 %}
+{% block content %}
+<main class="card card--narrow">
+  <h1 class="card__title">{{ 'auth.login.title'|t }}</h1>
+  {{ m.flashes() }}
+  {% if locked %}
+    {% set lock_min = (lock_seconds / 60)|round(0, 'ceil') %}
+    <div class="notice notice--error" role="alert" data-lock="{{ lock_seconds }}"
+      data-text-many="{{ 'auth.locked.many'|t({minutes: '{minutes}'}) }}" data-text-one="{{ 'auth.locked.one'|t }}"
+      data-text-soon="{{ 'auth.locked.soon'|t }}" data-text-free="{{ 'auth.locked.free'|t }}">
+      {%- if lock_seconds < 60 %}{{ 'auth.locked.soon'|t }}{% elseif lock_min == 1 %}{{ 'auth.locked.one'|t }}{% else %}{{ 'auth.locked.many'|t({minutes: lock_min}) }}{% endif -%}
+    </div>
+  {% elseif error ?? null %}
+    <div class="notice notice--error" role="alert">{{ error|t }}</div>
+  {% endif %}
+  <form method="post" action="/admin/login">
+    {{ m.csrf() }}
+    <fieldset class="fieldset stack"{% if locked %} disabled data-locked{% endif %}>
+      <legend class="visually-hidden">{{ 'auth.login.title'|t }}</legend>
+      {{ m.input('username', 'auth.identifier'|t, username ?? '', {}, {required: true, autocomplete: 'username'}) }}
+      {{ m.input('password', 'auth.password'|t, '', {}, {type: 'password', required: true, autocomplete: 'current-password'}) }}
+      <button class="button button--primary button--wide" type="submit">{{ 'auth.login.submit'|t }}</button>
+    </fieldset>
+  </form>
+  <p class="card__footer"><a href="/admin/forgot">{{ 'auth.forgot.link'|t }}</a></p>
+</main>
+<p class="muted small">{{ 'auth.lock_note'|t({minutes: lock_minutes ?? 10}) }}</p>
+{% endblock %}

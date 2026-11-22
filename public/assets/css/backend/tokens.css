@@ -1,0 +1,132 @@
+/*
+ * Bioly backend: design tokens. Every color, size and shadow of the backend is defined here once;
+ * the other files only use these variables. The layer order below decides which file wins,
+ * independent of how specific a selector is: later layers win.
+ */
+
+@layer tokens, base, forms, buttons, components, layout, editor, pages, states;
+
+@layer tokens {
+  :root {
+    /* Brand: the one place for Bioly's color ("Azur", Theme::BRAND). Everything blue derives from it. */
+    --brand: #0b63b8;
+    --accent: var(--brand);
+    --accent-dark: color-mix(in srgb, var(--brand) 80%, #000);
+    --accent-soft: color-mix(in srgb, var(--brand) 10%, transparent);
+    --accent-tint: color-mix(in srgb, var(--brand) 12%, #fff);
+    --accent-line: color-mix(in srgb, var(--brand) 30%, #fff);
+    --accent-ink: color-mix(in srgb, var(--brand) 50%, #000);
+    --on-accent: #fff;
+
+    /* Neutrals */
+    --ground: #f6f6f4;
+    --surface: #fff;
+    --surface-soft: #fafafa;
+    --track: #eaeae7;
+    --neutral-soft: #f4f4f5;
+    --neutral-ink: #3f3f46;
+    --border: #e4e4e7;
+    --subtle: #a1a1aa;
+    --field: #85858f;
+    --text: #18181b;
+    --muted: #52525b;
+    --on-dark: #fff;
+    --hover: rgb(0 0 0 / 0.05);
+    --hairline: rgb(0 0 0 / 0.1);
+    --overlay: rgb(24 24 27 / 0.35);
+    --overlay-strong: rgb(24 24 27 / 0.55);
+    --checker: #e4e4e0;
+
+    /* The phone frame of the live preview */
+    --phone-frame: #26282e;
+    --phone-screen: #0e0f11;
+
+    /* Status: line, light ground, soft fill, dark text */
+    --ok: #15803d;
+    --ok-line: #bbf7d0;
+    --ok-ground: #f0fdf4;
+    --ok-soft: #dcfce7;
+    --ok-ink: #14532d;
+    --warn: #fbbf24;
+    --warn-line: #f5d49a;
+    --warn-ground: #fff7e6;
+    --warn-soft: #fef3c7;
+    --warn-ink: #78350f;
+    --danger: #b91c1c;
+    --danger-line: #fecaca;
+    --danger-ground: #fef2f2;
+    --danger-soft: #fee2e2;
+    --danger-ink: #7f1d1d;
+
+    /* Type */
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-display: "Space Grotesk", var(--font);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --text-xs: 12px;
+    --text-sm: 13px;
+    --text-md: 14px;
+    --text-base: 15px;
+    --text-lg: 17px;
+    --text-xl: 22px;
+    --text-2xl: 26px;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+    --leading: 1.5;
+    --tracking-caps: 0.08em;
+
+    /* Spacing: steps of 2px, so --space-4 is 8px. Changing the unit changes all distances at once. */
+    --space-unit: 2px;
+    --space-1: calc(var(--space-unit) * 1);
+    --space-2: calc(var(--space-unit) * 2);
+    --space-3: calc(var(--space-unit) * 3);
+    --space-4: calc(var(--space-unit) * 4);
+    --space-5: calc(var(--space-unit) * 5);
+    --space-6: calc(var(--space-unit) * 6);
+    --space-7: calc(var(--space-unit) * 7);
+    --space-8: calc(var(--space-unit) * 8);
+    --space-9: calc(var(--space-unit) * 9);
+    --space-10: calc(var(--space-unit) * 10);
+    --space-12: calc(var(--space-unit) * 12);
+    --space-14: calc(var(--space-unit) * 14);
+    --space-20: calc(var(--space-unit) * 20);
+    --space-24: calc(var(--space-unit) * 24);
+
+    /* Corners */
+    --radius-xs: 8px;
+    --radius-inner: 9px;
+    --radius-sm: 10px;
+    --radius: 12px;
+    --radius-md: 14px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+
+    /* Heights of controls; 44px is the minimum touch target */
+    --control: 44px;
+    --control-md: 40px;
+    --control-sm: 36px;
+    --control-xs: 32px;
+
+    /* Icon sizes */
+    --icon-xs: 14px;
+    --icon-sm: 16px;
+    --icon: 18px;
+    --icon-md: 20px;
+    --icon-lg: 22px;
+
+    /* Shadows and focus */
+    --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.05);
+    --shadow-card: 0 12px 40px rgb(16 24 40 / 0.08);
+    --shadow-phone: 0 20px 50px rgb(16 24 40 / 0.18);
+    --shadow-drawer: -12px 0 40px rgb(0 0 0 / 0.12);
+    --shadow-dialog: 0 24px 60px rgb(0 0 0 / 0.25);
+    --shadow-knob: 0 1px 2px rgb(0 0 0 / 0.2);
+    --ring-soft: 0 0 0 3px var(--accent-soft);
+    --focus-ring: 3px solid var(--accent);
+    --focus-offset: 2px;
+
+    /* Motion */
+    --duration: 0.15s;
+  }
+}

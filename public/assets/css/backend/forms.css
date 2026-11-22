@@ -1,0 +1,350 @@
+/* Bioly backend: Form fields, password field, radio cards, segmented control and switch. */
+
+@layer forms {
+  /* Fields */
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .field__label {
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+  }
+
+  .field__required {
+    color: var(--danger);
+  }
+
+  .field__help {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+
+  .field__error {
+    margin: 0;
+    color: var(--danger);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+  }
+
+  .field--error .input,
+  .input[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+
+  .fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .input {
+    width: 100%;
+    min-height: var(--control);
+    padding: 0 var(--space-6);
+    border: 1px solid var(--field);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+  }
+
+  textarea.input {
+    padding: var(--space-6);
+    resize: vertical;
+  }
+
+  /* Own arrow with room to the edge instead of the native one at the very border */
+  /* Date and time: the browser picker needs no full width */
+  .input--short {
+    max-width: 14rem;
+  }
+
+  /* Two fields side by side (date and time), one below the other when narrow */
+  .field-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  .field-pair .input--short {
+    max-width: none;
+  }
+
+  select.input {
+    padding-right: var(--space-20);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 14px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  select.input[multiple] {
+    padding-right: var(--space-6);
+    background-image: none;
+  }
+
+  .input--editor {
+    font-family: var(--font-mono);
+    line-height: 1.6;
+  }
+
+  input[type="color"].input {
+    width: 56px;
+    padding: var(--space-1);
+    cursor: pointer;
+  }
+
+  .input--file {
+    padding: var(--space-4) var(--space-6);
+    cursor: pointer;
+  }
+
+  .color-field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  .color-field .input[type="text"] {
+    width: 120px;
+    font-family: var(--font-mono);
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: var(--control-xs);
+    font-size: var(--text-md);
+  }
+
+  .check input {
+    width: var(--icon);
+    height: var(--icon);
+    accent-color: var(--accent);
+  }
+
+  /* Password */
+
+  .password-field {
+    position: relative;
+  }
+
+  .password-field .input {
+    padding-right: var(--space-24);
+  }
+
+  .password-field__toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .password-field__toggle:hover {
+    color: var(--text);
+  }
+
+  .password-field__icon {
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+
+  .password-field__toggle[aria-pressed="true"] .password-field__icon--show,
+  .password-field__toggle[aria-pressed="false"] .password-field__icon--hide {
+    display: none;
+  }
+
+  .password-rules {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: var(--space-2) var(--space-8);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    color: var(--muted);
+    font-size: var(--text-sm);
+    list-style: none;
+  }
+
+  .password-rules__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .password-rules__icon {
+    flex: none;
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+  }
+
+  .password-rules__icon--met,
+  .password-rules__item--met .password-rules__icon--open {
+    display: none;
+  }
+
+  .password-rules__item--met {
+    color: var(--ok);
+  }
+
+  .password-rules__item--met .password-rules__icon--met {
+    display: block;
+  }
+
+  /* Choices */
+
+  .radio-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .radio-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-5);
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: pointer;
+  }
+
+  .radio-card:has(input:checked) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .radio-card input {
+    width: var(--icon);
+    height: var(--icon);
+    margin: var(--space-1) 0 0;
+    accent-color: var(--accent);
+  }
+
+  .radio-card__text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .radio-card__desc {
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+
+  .segmented {
+    display: flex;
+    gap: var(--space-2);
+    padding: 3px;
+    border-radius: var(--radius);
+    background: var(--track);
+  }
+
+  .segmented__item {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--control-md);
+    border-radius: var(--radius-inner);
+    color: var(--muted);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+  }
+
+  .segmented__item[aria-current="page"] {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .segmented--small {
+    flex: none;
+  }
+
+  .segmented--small .segmented__item {
+    min-height: var(--control-xs);
+    padding: 0 var(--space-6);
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  .segmented__item[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .segmented--full {
+    display: flex;
+  }
+
+  .segmented--full .segmented__item {
+    flex: 1;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 40px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .switch::before {
+    content: "";
+    width: 40px;
+    height: 24px;
+    border-radius: var(--radius);
+    background: var(--subtle);
+    transition: background var(--duration);
+  }
+
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 11px;
+    left: 9px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: var(--shadow-knob);
+    transition: transform var(--duration);
+  }
+
+  .switch[aria-checked="true"]::before {
+    background: var(--accent);
+  }
+
+  .switch[aria-checked="true"]::after {
+    transform: translateX(16px);
+  }
+}

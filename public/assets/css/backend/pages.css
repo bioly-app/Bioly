@@ -1,0 +1,218 @@
+/* Bioly backend: Single pages: media library and legal texts. */
+
+@layer pages {
+  /* Media library */
+
+  .media-upload {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-8);
+  }
+
+  .media-upload > .field {
+    flex: 1 1 240px;
+  }
+
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .media-grid--icons {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .media-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: var(--space-7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    scroll-margin-top: 16px;
+  }
+
+  .media-card:target {
+    border-color: var(--accent);
+    box-shadow: var(--ring-soft);
+  }
+
+  .media-card__image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-sm);
+    background: var(--ground);
+    object-fit: contain;
+  }
+
+  .media-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96px;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, currentColor 14%, var(--surface));
+    color: var(--text);
+  }
+
+  .media-card__icon--original {
+    background: var(--ground);
+  }
+
+  .media-card__icon svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .media-card__meta,
+  .media-card__uses,
+  .media-card__locked {
+    margin: 0;
+  }
+
+  .media-card__uses {
+    color: var(--accent-dark);
+    font-weight: var(--weight-medium);
+  }
+
+  .media-card__uses--warn {
+    color: var(--warn-ink);
+  }
+
+  .media-card__delete summary {
+    list-style: none;
+  }
+
+  .media-card__delete summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .media-card__confirm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    padding: var(--space-6);
+    border-radius: var(--radius);
+    background: var(--danger-ground);
+  }
+
+  .media-card__confirm p {
+    margin: 0;
+  }
+
+  /* Legal texts: Markdown editor and preview */
+
+  .md-editor {
+    overflow: hidden;
+    border: 1px solid var(--field);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+
+  .md-editor:focus-within {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+
+  .md-editor .input--editor {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .md-editor .input--editor:focus-visible {
+    outline: none;
+  }
+
+  .md-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-soft);
+  }
+
+  .md-toolbar__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    min-width: 36px;
+    height: 36px;
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+  }
+
+  .md-toolbar__button:hover,
+  .md-toolbar__button[aria-pressed="true"] {
+    background: var(--hover);
+  }
+
+  .md-toolbar__button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .md-toolbar__button--italic {
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+
+  .md-toolbar__button--text {
+    font-weight: var(--weight-semibold);
+  }
+
+  .md-toolbar__icon {
+    width: var(--icon);
+    height: var(--icon);
+  }
+
+  .md-toolbar__sep {
+    width: 1px;
+    height: 22px;
+    margin: 0 var(--space-2);
+    background: var(--border);
+  }
+
+  .md-toolbar__spacer {
+    flex: 1;
+  }
+
+  .md-preview {
+    min-height: 420px;
+    padding: var(--space-8) var(--space-10);
+    overflow: auto;
+  }
+
+  .legal-preview h2 {
+    margin: 1.2em 0 0.4em;
+    font-size: var(--text-xl);
+  }
+
+  .legal-preview h3 {
+    margin: 1em 0 0.3em;
+    font-size: 18px;
+  }
+
+  .legal-preview hr {
+    margin: 1.5em 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+}

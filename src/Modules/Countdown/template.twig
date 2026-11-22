@@ -1,0 +1,55 @@
+{%- macro date(p) -%}
+  {%- set weekdays = ('module.countdown.weekdays'|t)|split(',') -%}
+  {%- set months = ('module.countdown.months'|t)|split(',') -%}
+  {{- 'module.countdown.date'|t({weekday: weekdays[p.weekday], day: p.day, month: months[p.month - 1]}) -}}
+{%- endmacro -%}
+{%- import _self as m -%}
+{%- if not hidden -%}
+{%- set texts = {
+  day: 'module.countdown.unit.day'|t, days: 'module.countdown.unit.days'|t, hours: 'module.countdown.unit.hours'|t, minutes: 'module.countdown.unit.minutes'|t,
+  inDay: 'module.countdown.in.day'|t, inDays: 'module.countdown.in.days'|t, inHours: 'module.countdown.in.hours'|t, inMinutes: 'module.countdown.in.minutes'|t,
+  timer: 'module.countdown.timer'|t,
+} -%}
+{%- set tag = url ? 'a' : 'div' -%}
+<{{ tag }} class="countdown countdown--{{ display }}{% if url %} countdown--link{% endif %}"
+  {%- if url %} href="{{ url }}"{% if new_tab %} target="_blank" rel="noopener"{% endif %}{% endif %}
+  data-countdown data-start="{{ start_iso }}" data-end="{{ end_iso }}" data-after="{{ after }}" data-texts="{{ texts|json_encode }}">
+  <span class="countdown__head">
+    <span class="countdown__date" aria-hidden="true">
+      <span class="countdown__month">{{ (('module.countdown.months'|t)|split(','))[start.month - 1] }}</span>
+      <span class="countdown__day">{{ start.day }}</span>
+    </span>
+    <span class="countdown__text">
+      {%- if eyebrow and display == 'large' %}<span class="countdown__eyebrow">{{ eyebrow }}</span>{% endif -%}
+      <span class="countdown__title">{{ title }}</span>
+      <span class="countdown__meta"><span class="countdown__meta-text">
+        {{- m.date(start) -}}
+        {%- if start_time %} · {{ 'module.countdown.from'|t({time: start_time}) }}{% endif -%}
+        {%- if place %} · <span class="countdown__place">{% if display == 'large' %}{{ ui_icon('map-pin', 'countdown__pin') }}{% endif %}{{ place }}</span>{% endif -%}
+      </span></span>
+    </span>
+    {%- if display == 'compact' %}
+    <span class="countdown__pill" data-part="upcoming"{% if state != 'upcoming' %} hidden{% endif %} data-in>
+      {{- left.days >= 2 ? 'module.countdown.in.days'|t({n: left.days}) : (left.days == 1 ? 'module.countdown.in.day'|t : (left.hours >= 1 ? 'module.countdown.in.hours'|t({n: left.hours}) : 'module.countdown.in.minutes'|t({n: max(1, left.minutes)}))) -}}
+    </span>
+    <span class="countdown__pill countdown__pill--live" data-part="live"{% if state != 'live' %} hidden{% endif %}><span class="countdown__dot" aria-hidden="true"></span>{{ 'module.countdown.live_short'|t }}</span>
+    <span class="countdown__pill countdown__pill--over" data-part="over"{% if state != 'over' %} hidden{% endif %}>{{ 'module.countdown.over_short'|t }}</span>
+    {%- endif %}
+    {%- if url %}{{ ui_icon('arrow-up-right', 'countdown__arrow') }}{% endif -%}
+  </span>
+  {%- if display == 'large' %}
+  <span class="countdown__timer" role="timer" data-part="upcoming"{% if state != 'upcoming' %} hidden{% endif %}
+    aria-label="{{ 'module.countdown.timer'|t({days: left.days, hours: left.hours, minutes: left.minutes}) }}">
+    <span class="countdown__unit"><span class="countdown__num" data-unit="days">{{ left.days }}</span><span class="countdown__label" data-label="days">{{ left.days == 1 ? 'module.countdown.unit.day'|t : 'module.countdown.unit.days'|t }}</span></span>
+    <span class="countdown__unit"><span class="countdown__num" data-unit="hours">{{ '%02d'|format(left.hours) }}</span><span class="countdown__label">{{ 'module.countdown.unit.hours'|t }}</span></span>
+    <span class="countdown__unit"><span class="countdown__num" data-unit="minutes">{{ '%02d'|format(left.minutes) }}</span><span class="countdown__label">{{ 'module.countdown.unit.minutes'|t }}</span></span>
+  </span>
+  <span class="countdown__status countdown__status--live" data-part="live"{% if state != 'live' %} hidden{% endif %}>
+    <span class="countdown__dot" aria-hidden="true"></span>
+    {{- until.kind == 'time' ? 'module.countdown.live_until'|t({until: 'module.countdown.until_time'|t({time: until.time})})
+      : (until.kind == 'date' ? 'module.countdown.live_until'|t({until: m.date(until.date)}) : 'module.countdown.live'|t) -}}
+  </span>
+  <span class="countdown__status countdown__status--over" data-part="over"{% if state != 'over' %} hidden{% endif %}>{{ 'module.countdown.over'|t }}</span>
+  {%- endif %}
+</{{ tag }}>
+{%- endif -%}

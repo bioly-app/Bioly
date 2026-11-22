@@ -1,0 +1,93 @@
+{% extends 'layout/backend.twig' %}
+{% set general = mode == 'general' %}
+{% block title %}{{ general ? 'general.title'|t : 'editor.title'|t }}{% endblock %}
+{% block content %}
+<div class="editor" data-editor data-mode="{{ mode }}">
+  <div class="unsaved" data-unsaved hidden>
+    <span class="unsaved__dot" aria-hidden="true"></span>
+    <p class="unsaved__text">{{ 'editor.unsaved'|t }}</p>
+    <button class="button button--on-dark" type="button" data-action="discard">{{ 'editor.discard'|t }}</button>
+    <button class="button button--primary" type="button" data-action="publish">{{ 'editor.publish'|t }}</button>
+  </div>
+  <div class="editor__status" role="status" aria-live="polite" data-status></div>
+
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ general ? 'general.title'|t : 'editor.title'|t }}</h1>
+      <p class="muted">{{ general ? 'general.intro'|t : 'editor.intro'|t }}</p>
+    </div>
+  </header>
+
+  {% if general %}
+    <div class="stack" data-panel="design"></div>
+  {% else %}
+    <div class="tabs" role="tablist" aria-label="{{ 'editor.title'|t }}">
+      <button class="tabs__tab" type="button" role="tab" id="tab-content" aria-controls="panel-content" aria-selected="true" data-tab="content">{{ 'editor.tab.content'|t }}</button>
+      <button class="tabs__tab" type="button" role="tab" id="tab-header" aria-controls="panel-header" aria-selected="false" tabindex="-1" data-tab="header">{{ 'editor.tab.header'|t }}</button>
+    </div>
+
+    <section class="tabs__panel" role="tabpanel" id="panel-content" aria-labelledby="tab-content" data-panel="content">
+      <ol class="blocks" data-blocks aria-label="{{ 'editor.tab.content'|t }}"></ol>
+      <button class="add-button" type="button" data-action="add">{{ 'editor.add'|t }}</button>
+    </section>
+    <section class="tabs__panel" role="tabpanel" id="panel-header" aria-labelledby="tab-header" data-panel="header" hidden></section>
+  {% endif %}
+</div>
+{# Icons for editor.js, so the script needs no SVG code of its own #}
+<template data-ui-icon="grip">{{ ui_icon('grip-vertical') }}</template>
+<template data-ui-icon="up">{{ ui_icon('chevron-up') }}</template>
+<template data-ui-icon="down">{{ ui_icon('chevron-down') }}</template>
+<template data-ui-icon="upload">{{ ui_icon('upload') }}</template>
+<template data-ui-icon="trash">{{ ui_icon('trash-2') }}</template>
+<template data-ui-icon="image">{{ ui_icon('image') }}</template>
+{% endblock %}
+
+{% block aside %}
+<aside class="preview" aria-label="{{ 'editor.preview'|t }}">
+  <h2 class="preview__title">{{ 'editor.preview'|t }}</h2>
+  <div class="preview__frame">
+    <iframe class="preview__iframe" src="/admin/preview" title="{{ 'editor.preview.title'|t }}" data-preview></iframe>
+  </div>
+</aside>
+
+<div class="drawer" data-drawer hidden>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1">
+    <div class="drawer__head">
+      <div>
+        <p class="eyebrow" data-drawer-type></p>
+        <h2 class="drawer__title" id="drawer-title">{{ 'editor.edit'|t }}</h2>
+      </div>
+      <button class="icon-button" type="button" data-action="close-drawer" aria-label="{{ 'common.close'|t }}">{{ ui_icon('x') }}</button>
+    </div>
+    <form class="drawer__form stack" data-drawer-form novalidate></form>
+  </div>
+</div>
+
+<dialog class="dialog" data-add-dialog aria-labelledby="add-title">
+  <div class="dialog__head">
+    <h2 class="dialog__title" id="add-title">{{ 'editor.add.title'|t }}</h2>
+    <button class="icon-button" type="button" data-action="close-dialog" aria-label="{{ 'common.close'|t }}">{{ ui_icon('x') }}</button>
+  </div>
+  <ul class="module-list" data-module-list></ul>
+</dialog>
+
+<dialog class="dialog dialog--wide" data-icon-dialog aria-labelledby="icon-title">
+  <div class="dialog__head">
+    <h2 class="dialog__title" id="icon-title">{{ 'editor.icon.title'|t }}</h2>
+    <button class="icon-button" type="button" data-action="close-dialog" aria-label="{{ 'common.close'|t }}">{{ ui_icon('x') }}</button>
+  </div>
+  <div class="icon-picker" data-icon-picker></div>
+</dialog>
+
+<dialog class="dialog dialog--wide" data-image-dialog aria-labelledby="image-title">
+  <div class="dialog__head">
+    <h2 class="dialog__title" id="image-title">{{ 'media.choose.title'|t }}</h2>
+    <button class="icon-button" type="button" data-action="close-dialog" aria-label="{{ 'common.close'|t }}">{{ ui_icon('x') }}</button>
+  </div>
+  <div class="stack" data-image-picker></div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ asset('/assets/js/editor.js') }}"></script>
+{% endblock %}

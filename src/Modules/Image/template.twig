@@ -1,0 +1,27 @@
+{%- macro picture(image, ratio) -%}
+  <img class="media-block__image{% if image.transparent %} media-block__image--contain{% endif %}" src="{{ image.url }}" alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}" height="{{ image.height }}"{% endif %} loading="lazy" decoding="async"{% if image.color %} data-color="{{ image.color }}"{% endif %}>
+{%- endmacro -%}
+{%- macro framed(image, ratio) -%}
+  {%- if image.link -%}
+    <a class="media-block__link" href="{{ image.link }}" target="_blank" rel="noopener">{{ _self.picture(image, ratio) }}</a>
+  {%- else -%}
+    {{ _self.picture(image, ratio) }}
+  {%- endif -%}
+{%- endmacro -%}
+{% if images|length == 1 %}
+<figure class="media-block media-block--{{ ratio }}{% if clear %} media-block--clear{% endif %}"{% if title %} aria-label="{{ title }}"{% endif %}>
+  {{ _self.framed(images[0], ratio) }}
+</figure>
+{% elseif images|length > 1 %}
+<section class="slider slider--{{ ratio }}" aria-roledescription="{{ 'module.image.carousel'|t }}" aria-label="{{ title ?: 'module.image.name'|t }}" data-slider{% if autoplay %} data-autoplay="{{ interval }}"{% endif %}
+  data-text-prev="{{ 'module.image.prev'|t }}" data-text-next="{{ 'module.image.next'|t }}" data-text-slide="{{ 'module.image.slide'|t }}"
+  data-text-pause="{{ 'module.image.pause'|t }}" data-text-play="{{ 'module.image.play'|t }}">
+  <div class="media-block media-block--{{ ratio }}{% if clear %} media-block--clear{% endif %} slider__frame">
+    <ul class="slider__track" tabindex="0" aria-label="{{ title ?: 'module.image.name'|t }}">
+      {% for image in images %}
+        <li class="slider__slide" role="group" aria-roledescription="{{ 'module.image.slide_role'|t }}" aria-label="{{ loop.index }} / {{ images|length }}">{{ _self.framed(image, ratio) }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}

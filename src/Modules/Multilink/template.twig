@@ -1,0 +1,8 @@
+<button type="button" class="tile tile--multilink tile--icon-{{ icon.style }}" data-multilink="{{ id }}"{% if age_gate %} data-age-gate="{{ age_gate }}"{% endif %} aria-haspopup="dialog">
+  {%- if icon.html %}<span class="tile__icon icon--{{ icon.color }}">{{ icon.html|raw }}</span>{% endif -%}
+  <span class="tile__text">
+    <span class="tile__title">{{ title }}</span>
+    {%- if subtitle %}<span class="tile__subtitle">{{ subtitle }}</span>{% endif -%}
+  </span>
+  {{ ui_icon('chevron-right', 'tile__arrow') }}
+</button>

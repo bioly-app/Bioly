@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="{{ locale ?? 'de' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.name ?? 'Bioly' }}{% endblock %}</title>
+  {% block meta %}{% endblock %}
+  <link rel="stylesheet" href="{{ asset('/assets/css/site.css') }}">
+  {% if theme_url %}<link rel="stylesheet" href="{{ theme_url }}">{% endif %}
+  {% if favicon_url ?? null %}<link rel="icon" href="{{ favicon_url }}" type="image/svg+xml">{% endif %}
+  {% block head %}{% endblock %}
+</head>
+<body class="site{% block body_class %}{% endblock %}"{% block body_attributes %}{% endblock %}>
+  {% block background %}{% endblock %}
+  <div class="site__inner">
+    {% block content %}{% endblock %}
+    <footer class="site-footer">
+      <nav class="site-footer__nav" aria-label="{{ 'site.footer'|t }}">
+        {# Own text on /impressum and /datenschutz, or an external page chosen in the backend #}
+        {% set legal_links = site.legal ?? {} %}
+        <a class="site-footer__link" href="{{ legal_links.imprint ?? '/impressum' }}"{% if legal_links.imprint is defined %} rel="noopener"{% endif %}>{{ 'site.imprint'|t }}</a>
+        <span aria-hidden="true">·</span>
+        <a class="site-footer__link" href="{{ legal_links.privacy ?? '/datenschutz' }}"{% if legal_links.privacy is defined %} rel="noopener"{% endif %}>{{ 'site.privacy'|t }}</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+</html>

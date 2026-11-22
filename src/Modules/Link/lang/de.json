@@ -1,0 +1,12 @@
+{
+  "module.link.name": "Link",
+  "module.link.description": "Ein Button mit Titel, Icon und Ziel",
+  "module.link.title": "Titel",
+  "module.link.subtitle": "Subtext",
+  "module.link.subtitle.help": "Optional. Erscheint klein unter dem Titel.",
+  "module.link.url": "Link",
+  "module.link.url.help": "Vollständige Adresse, z. B. https://instagram.com/name, mailto: oder tel:",
+  "module.link.icon": "Icon",
+  "module.link.icon_style": "Icon-Stil",
+  "module.link.new_tab": "In neuem Tab öffnen"
+}

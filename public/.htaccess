@@ -1,0 +1,25 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# CSS and patterns are linked with ?v=<version>.<hash>, so they may stay cached for a year.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+# JavaScript modules import each other without a version (./backend/api.js), so the
+# browser asks every time whether a file changed; unchanged files cost only a short 304.
+<IfModule mod_headers.c>
+    <FilesMatch "\.m?js$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

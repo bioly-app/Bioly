@@ -1,0 +1,97 @@
+{% extends 'layout/backend.twig' %}
+{% import 'partials/macros.twig' as m %}
+{% block title %}{{ 'legal.title'|t }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1 class="page-header__title">{{ 'legal.title'|t }}</h1>
+    <p class="muted">{{ 'legal.intro'|t }}</p>
+  </div>
+  <a class="button" href="/{{ page.slug }}" target="_blank" rel="noopener">{{ 'legal.view'|t({page: ('legal.' ~ type)|t}) }}</a>
+</header>
+
+<nav class="tabs" aria-label="{{ 'legal.title'|t }}">
+  {% for t in ['imprint', 'privacy'] %}
+    <a class="tabs__tab" href="/admin/legal/{{ t }}"{% if t == type %} aria-current="page"{% endif %}>{{ ('legal.' ~ t)|t }}</a>
+  {% endfor %}
+</nav>
+
+<div class="notice notice--info">{{ 'legal.note'|t }}</div>
+<form method="post" action="/admin/legal/{{ type }}" class="stack" data-legal-form{% if url_error %} data-legal-draft="true"{% endif %}>
+  {{ m.csrf() }}
+  {# Same as on "Page" and "General": changes stay a draft until "Publish". #}
+  <div class="unsaved" data-unsaved hidden>
+    <span class="unsaved__dot" aria-hidden="true"></span>
+    <p class="unsaved__text">{{ 'editor.unsaved'|t }}</p>
+    <button class="button button--on-dark" type="button" data-action="discard" data-confirm="{{ 'editor.discard.confirm'|t }}">{{ 'editor.discard'|t }}</button>
+    <button class="button button--primary" type="submit">{{ 'editor.publish'|t }}</button>
+  </div>
+  <fieldset class="radio-cards">
+    <legend class="field__label">{{ 'legal.mode'|t({page: ('legal.' ~ type)|t}) }}</legend>
+    {% for value in ['text', 'link'] %}
+      <label class="radio-card">
+        <input type="radio" name="mode" value="{{ value }}" data-legal-mode{% if mode == value %} checked{% endif %}>
+        <span class="radio-card__text">
+          <strong>{{ ('legal.mode.' ~ value)|t }}</strong>
+          <span class="radio-card__desc">{{ ('legal.mode.' ~ value ~ '.desc')|t }}</span>
+        </span>
+      </label>
+    {% endfor %}
+  </fieldset>
+  <div class="field{% if url_error %} field--error{% endif %}" data-legal-link>
+    <label class="field__label" for="f-url">{{ 'legal.link.url'|t }}</label>
+    <input class="input" id="f-url" name="url" type="text" inputmode="url" autocomplete="off" placeholder="https://" value="{{ url }}" maxlength="{{ constant('Bioly\\Module\\Validator::MAX_URL') }}" aria-describedby="f-url-help{% if url_error %} f-url-error{% endif %}"{% if url_error %} aria-invalid="true"{% endif %}>
+    {% if url_error %}<p class="field__error" id="f-url-error">{{ url_error }}</p>{% endif %}
+    <p class="field__help" id="f-url-help">{{ 'legal.link.help'|t }}</p>
+  </div>
+  <div class="field" data-legal-text>
+    <label class="field__label" for="f-content">{{ 'legal.content'|t({page: ('legal.' ~ type)|t}) }}</label>
+    <div class="md-editor" data-md-editor data-placeholder="{{ 'md.placeholder'|t }}">
+      <div class="md-toolbar" role="toolbar" aria-label="{{ 'md.toolbar'|t }}" aria-controls="f-content" hidden data-md-toolbar>
+        <button class="md-toolbar__button md-toolbar__button--text" type="button" data-md="plain" title="{{ 'md.plain.help'|t }}">{{ 'md.plain'|t }}</button>
+        <button class="md-toolbar__button" type="button" data-md="h2" title="{{ 'md.h2'|t }}">H2</button>
+        <button class="md-toolbar__button" type="button" data-md="h3" title="{{ 'md.h3'|t }}">H3</button>
+        <span class="md-toolbar__sep" aria-hidden="true"></span>
+        <button class="md-toolbar__button md-toolbar__button--bold" type="button" data-md="bold" title="{{ 'md.bold'|t }} (Ctrl+B)" aria-label="{{ 'md.bold'|t }}">B</button>
+        <button class="md-toolbar__button md-toolbar__button--italic" type="button" data-md="italic" title="{{ 'md.italic'|t }} (Ctrl+I)" aria-label="{{ 'md.italic'|t }}">I</button>
+        <span class="md-toolbar__sep" aria-hidden="true"></span>
+        <button class="md-toolbar__button" type="button" data-md="list" title="{{ 'md.list'|t }}" aria-label="{{ 'md.list'|t }}">{{ ui_icon('list', 'md-toolbar__icon') }}</button>
+        <button class="md-toolbar__button" type="button" data-md="link" title="{{ 'md.link'|t }}" aria-label="{{ 'md.link'|t }}">{{ ui_icon('link', 'md-toolbar__icon') }}</button>
+        <button class="md-toolbar__button" type="button" data-md="line" title="{{ 'md.line'|t }}" aria-label="{{ 'md.line'|t }}">{{ ui_icon('minus', 'md-toolbar__icon') }}</button>
+        <span class="md-toolbar__spacer"></span>
+        <button class="md-toolbar__button md-toolbar__button--text" type="button" data-md-preview aria-pressed="false">{{ ui_icon('eye', 'md-toolbar__icon') }}{{ 'md.preview'|t }}</button>
+      </div>
+      <textarea class="input input--editor" id="f-content" name="content" rows="22" aria-describedby="f-content-help">{{ page.content_md }}</textarea>
+      <div class="md-preview legal-preview" data-md-output hidden tabindex="0" aria-label="{{ 'md.preview'|t }}"></div>
+    </div>
+    <p class="field__help" id="f-content-help">{{ 'legal.help'|t }}</p>
+  </div>
+  <div><button class="button button--primary" type="submit" data-legal-publish disabled>{{ 'editor.publish'|t }}</button></div>
+</form>
+
+<dialog class="dialog" data-md-link-dialog aria-labelledby="md-link-title">
+  <form method="dialog" class="stack" data-no-busy>
+    <div class="dialog__head">
+      <h2 class="dialog__title" id="md-link-title">{{ 'md.link'|t }}</h2>
+    </div>
+    <div class="field">
+      <label class="field__label" for="md-link-text">{{ 'md.link.text'|t }}</label>
+      <input class="input" id="md-link-text" type="text" data-md-link-text>
+    </div>
+    <div class="field">
+      <label class="field__label" for="md-link-url">{{ 'md.link.url'|t }}</label>
+      <input class="input" id="md-link-url" type="text" inputmode="url" placeholder="https://" aria-describedby="md-link-help" data-md-link-url>
+      <p class="field__help" id="md-link-help">{{ 'md.link.help'|t }}</p>
+      <p class="field__error" data-md-link-error hidden>{{ 'md.link.invalid'|t }}</p>
+    </div>
+    <div class="row row--between">
+      <button class="button button--ghost" type="submit" value="cancel">{{ 'common.cancel'|t }}</button>
+      <button class="button button--primary" type="submit" value="ok" data-md-link-ok>{{ 'md.link.insert'|t }}</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ asset('/assets/js/legal-editor.js') }}"></script>
+{% endblock %}

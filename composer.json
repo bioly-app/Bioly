@@ -1,0 +1,58 @@
+{
+  "name": "bioly/bioly",
+  "description": "Self-hosted link page with a simple backend. Upload, point the webroot to /public, done.",
+  "type": "project",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Benedikt Jany"
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-pdo_sqlite": "*",
+    "ext-sodium": "*",
+    "slim/psr7": "^1.7",
+    "slim/slim": "^4.14",
+    "slim/twig-view": "^3.4",
+    "symfony/mailer": "^7.2"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.64",
+    "phpstan/phpstan": "^2.0",
+    "phpunit/phpunit": "^11.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bioly\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Bioly\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "analyse": "phpstan analyse",
+    "lint": "php-cs-fixer fix --dry-run --diff",
+    "fix": "php-cs-fixer fix",
+    "check-icons": "php bin/check-icons.php",
+    "check": [
+      "@lint",
+      "@analyse",
+      "@test",
+      "@check-icons",
+      "@composer audit --locked"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "8.3.0"
+    }
+  }
+}

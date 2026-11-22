@@ -1,0 +1,6 @@
+{
+  "module.divider.name": "Divider",
+  "module.divider.description": "Line with an optional title for more structure",
+  "module.divider.title": "Title",
+  "module.divider.title.help": "Optional. Without a title only a line is shown."
+}
