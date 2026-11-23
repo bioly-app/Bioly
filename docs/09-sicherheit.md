@@ -31,6 +31,10 @@ Diese Regeln gelten für **jede** Änderung. Sie sind der Grund, warum Bioly ohn
 | SVG-Bereinigung, eigene IDs pro Datei | `src/Support/SvgSanitizer.php` |
 | Bremse für Multilinks (20 Abrufe pro Minute und Adresse, Adresse nur als HMAC gespeichert) | `src/Service/RateLimiter.php`, Tabelle `rate_hits` |
 | Feldprüfung der Module | `src/Module/Validator.php` |
+| Updates nur signiert (Ed25519, öffentlicher Schlüssel in `PublicKey.php`), jede Datei gegen ihre Prüfsumme, keine Pfade außerhalb von `bioly/` | `src/Update/Package.php` |
+| Kein Update in der Entwicklungsumgebung, Backup vor jedem Update, Rücksprung bei Fehlern | `src/Update/Updater.php`, `src/Http/Middleware/RunAfterUpdate.php` |
+| Hochgeladene Backups: nur Datenbank und Mediendateien, keine Programmdateien; Konto und Mail-Einstellungen bleiben beim Wiederherstellen | `src/Update/Backups.php` |
+| Unsignierte Test-ZIPs nur auf der Testseite (`BIOLY_ALLOW_UNSIGNED_UPDATES`) | `docker-compose.yml`, `Services::allowUnsignedUpdates()` |
 
 ## Datenschutz: was Bioly speichert
 

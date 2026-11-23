@@ -17,7 +17,7 @@ Diese Sammlung erklärt, **wie Bioly aufgebaut ist** und **wie man es erweitert*
 | 7 | [Texte und Sprachen](07-sprachen.md) | Übersetzungen anlegen und benutzen |
 | 8 | [Datenbank](08-datenbank.md) | Tabellen, Einstellungen, Migrationen |
 | 9 | [Sicherheit](09-sicherheit.md) | Die Regeln, die jede Änderung einhalten muss |
-| 10 | [Arbeitsablauf](10-arbeitsablauf.md) | Von der Idee zum Pull Request: Prüfen, Testen, Code-Regeln |
+| 10 | [Arbeitsablauf](10-arbeitsablauf.md) | Make-Befehle, Prüfen, Update testen, Updater und Backups, Release und Veröffentlichen |
 | 11 | [Ordnerstruktur](11-ordnerstruktur.md) | Wo liegt was: jeder Ordner in ein, zwei Sätzen |
 
 ## Grundsätze in einem Satz

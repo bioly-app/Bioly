@@ -17,7 +17,9 @@ bioly/
 ├── data/                alles, was beim Benutzen entsteht (gehört dem Nutzer)
 ├── tests/               automatische Tests
 ├── docker/              Docker-Start und PHP-Einstellungen für die Entwicklung
-├── docs/                diese Doku (nicht im Release)
+├── docs/                diese Doku, images/ mit Screenshots für die README (nicht im Release)
+├── dist/                gebaute ZIPs aus make zip und make release (nicht im Git)
+├── .github/             Vorlagen für Issues und Pull Requests auf GitHub (nicht im Release)
 └── .intern/             interne Notizen, z. B. Release (nicht im Git, nicht im Release)
 ```
 
@@ -47,7 +49,7 @@ src/
 ├── Http/                Routen, Middleware, Controller, Fehlerseiten
 │   ├── Controller/      SiteController (Linkseite), Admin/ (Backend), Auth, Installer
 │   └── Middleware/      Sicherheits-Header, Installer-Sperre, Sitzung, Login
-├── Modules/             die Module: Link, Multilink, Image, Divider (je Code, Vorlage, Texte)
+├── Modules/             die Module: Link, Multilink, Image, Countdown, Divider (je Code, Vorlage, Texte)
 ├── Module/              Grundgerüst für Module: Registry, Validator
 ├── Page/                Seite bauen (PageBuilder) und veröffentlichen (Publisher)
 ├── Service/             Logik: Login, Konten, Mail, Mediathek, Favicon, Rechtstexte
@@ -58,7 +60,7 @@ src/
 ├── I18n/                Übersetzer
 ├── Twig/                eigene Twig-Funktionen, z. B. asset() mit Version
 ├── Support/             kleine Helfer: Sitzung, Uhr, Verschlüsselung, SVG-Bereinigung, Konfiguration
-└── Update/              Prüfung der Update-Pakete
+└── Update/              Updater: Update suchen (ReleaseFeed, UpdateCheck), Paket prüfen (Package), einspielen (Updater), Backups, AfterUpdate
 ```
 
 ## `templates/`: Twig-Vorlagen
@@ -66,7 +68,7 @@ src/
 ```text
 templates/
 ├── frontend/            Linkseite und Rechtsseiten (base.twig ist das Grundgerüst)
-├── backend/             Seiten im Backend: Editor, Mediathek, Rechtliches, Einstellungen, Credits
+├── backend/             Seiten im Backend: Editor, Mediathek, Rechtliches, Einstellungen, Updates, Credits
 ├── auth/                Login, Passwort vergessen, Passwort neu
 ├── layout/              Rahmen für Backend und schlichte Seiten
 ├── partials/            kleine Bausteine: Logo, Formular-Makros
@@ -96,8 +98,8 @@ data/
 ├── uploads/             Bilder und Icons aus der Mediathek, Profilbild, Favicon
 ├── cache/               fertige Seite (page.html, theme.css, favicon.svg), Twig-Cache
 ├── logs/                Fehlerprotokolle
-├── backups/             Sicherungen vor einem Update
-└── updates/             heruntergeladene Updates
+├── backups/             Backups: vor jedem Update (Programm und Datenbank, die letzten zwei) und eigene (Datenbank und Mediathek)
+└── updates/             Arbeitsordner beim Update, wird danach geleert
 ```
 
 Den Cache kann man jederzeit löschen: Bioly baut ihn beim nächsten Aufruf neu.
@@ -107,8 +109,9 @@ Den Cache kann man jederzeit löschen: Bioly baut ihn beim nächsten Aufruf neu.
 | Skript | Wofür |
 | --- | --- |
 | `migrate.php` | Datenbank auf den neuesten Stand bringen |
-| `release.php` | Release-ZIP bauen (intern, siehe `.intern/release.md`) |
-| `keys.php` | intern für Releases (siehe `.intern/release.md`) |
+| `release.php` | ZIP bauen: `make zip` (Test) und `make release` (signiert), nicht im Release |
+| `publish.php` | `make publish`: Release auf GitHub stellen, nicht im Release |
+| `keys.php` | `make keys`: Schlüsselpaar zum Signieren, nur einmal, nicht im Release |
 | `seed.php` | Beispieldaten für die Entwicklung |
 | `check-icons.php` | Icon-Ordner prüfen |
 | `import-brand-icons.php` | Plattform-Logos aus Simple Icons und SVG Logos übernehmen (nicht im Release) |
@@ -121,7 +124,8 @@ Den Cache kann man jederzeit löschen: Bioly baut ihn beim nächsten Aufruf neu.
 | `VERSION` | aktuelle Versionsnummer |
 | `CHANGELOG.md` | was sich in welcher Version geändert hat |
 | `composer.json` / `.lock` | PHP-Abhängigkeiten |
-| `Makefile` | Kurzbefehle, z. B. Tests und Release |
+| `Makefile` | Kurzbefehle: prüfen, Update testen, Release, Veröffentlichen |
+| `.env.example` | Vorlage für `.env` mit dem GitHub-Token für `make publish` (`.env` nie im Git) |
 | `Dockerfile`, `docker-compose.yml` | lokale Entwicklung mit Docker |
 | `phpunit.xml`, `phpstan.neon` | Tests und statische Prüfung |
 | `README.md`, `CONTRIBUTING.md`, `SECURITY.md` | Einstieg, Mitmachen, Sicherheitslücken melden |

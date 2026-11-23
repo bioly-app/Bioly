@@ -1,3 +1,7 @@
+# The .htaccess one folder up blocks everything (in case the webroot was not moved).
+# Apache passes that block down to this folder, so open the webroot again here.
+Require all granted
+
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

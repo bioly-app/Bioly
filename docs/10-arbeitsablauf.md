@@ -12,14 +12,15 @@ flowchart LR
 
 ## Make-Befehle
 
-Alles läuft über `make` im Projektordner. `make` allein zeigt alle Befehle mit kurzer Erklärung. Die Befehle sind nach den vier Schritten des Ablaufs sortiert:
+Alles läuft über `make` im Projektordner. `make` allein zeigt alle Befehle mit kurzer Erklärung. Die Befehle sind nach den Schritten des Ablaufs sortiert:
 
 ```mermaid
 flowchart LR
     E[Entwickeln<br/>docker compose up] --> P[Prüfen<br/>make check]
     P --> C[Commit]
     C --> U[Update ausprobieren<br/>make zip + make testsite]
-    U --> R[Veröffentlichen<br/>make release]
+    U --> R[Version bauen<br/>make release]
+    R --> V[Veröffentlichen<br/>make publish]
 ```
 
 ### 1. Entwickeln
@@ -39,7 +40,7 @@ flowchart LR
 | `make fix` | Code-Stil automatisch korrigieren, wenn `make check` Stilfehler meldet (ändert Dateien) |
 | `make check-icons` | nur die Icon-Ordner prüfen, z. B. nach dem Hinzufügen eines Icons |
 
-Eine Prüf-Action auf Forgejo gibt es bewusst nicht: Geprüft wird lokal mit `make check`. Der Container läuft mit der neuesten PHP-Version; PHPStan prüft trotzdem gegen PHP 8.3 (`phpVersion` in `phpstan.neon`), die älteste unterstützte Version. Einzelne Prüfungen gehen bei Bedarf direkt: `docker compose exec app composer test` (oder `analyse`, `lint`).
+Es gibt bewusst keine Prüf-Action (CI), weder auf Forgejo noch auf GitHub: Geprüft wird lokal mit `make check`. Der Container läuft mit der neuesten PHP-Version; PHPStan prüft trotzdem gegen PHP 8.3 (`phpVersion` in `phpstan.neon`), die älteste unterstützte Version. Wer die Tests wirklich unter PHP 8.3 laufen lassen will: `docker compose --profile compat run --rm compat composer test`. Einzelne Prüfungen gehen bei Bedarf direkt: `docker compose exec app composer test` (oder `analyse`, `lint`).
 
 ### 3. Ein Update ausprobieren
 

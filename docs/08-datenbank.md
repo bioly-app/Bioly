@@ -33,4 +33,4 @@ flowchart LR
 - **Eine veröffentlichte Migration nie mehr ändern.** Fehler werden mit einer neuen Migration korrigiert (Beispiel: `0004` korrigiert die Daten von `0003`).
 - Spalten **hinzufügen** ist sicher. Umbenennen oder Löschen in mehreren Schritten über mehrere Versionen.
 - Nur SQL, das SQLite 3.37 kann.
-- Migrationen laufen beim Installer, beim Start des Containers, mit `make migrate` und später beim Update.
+- Migrationen laufen beim Installer, beim Start des Containers, mit `make migrate`, beim ersten Aufruf nach einem Update (`AfterUpdate`) und beim Wiederherstellen eines älteren eigenen Backups.
