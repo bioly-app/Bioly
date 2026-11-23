@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com) and the projec
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-23
+
 ### Fixed
 
 - 403 Forbidden on real hosting (Apache): the `.htaccess` in the main folder, which blocks everything in case the webroot was not moved, was passed down to `public/` as well. `public/.htaccess` now opens the webroot again with `Require all granted`
